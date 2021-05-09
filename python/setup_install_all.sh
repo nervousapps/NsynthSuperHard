@@ -48,6 +48,19 @@ setup_serial() {
     fi
 }
 
+install_all_deps() {
+  sudo apt-get update
+  sudo apt-get upgrade -y
+  sudo apt-get -y bristol
+
+  sudo apt update
+  sudo apt upgrade -y
+  sudo apt install -y python3-mido python3-smbus python3-gpiozero
+
+  python3 -m pip install setuptools JACK-Client adafruit-circuitpython-ssd1306 python-rtmidi
+}
+
+install_all_deps
 setup_i2c
 setup_audio
 setup_serial
