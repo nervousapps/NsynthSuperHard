@@ -131,17 +131,16 @@ class BristolSynth:
             self.screen.draw_text_box("NsynthSuperHard")
             await asyncio.sleep(2)
 
-            for image in self.loading:
-                await self.screen.draw_image(image)
-                await asyncio.sleep(0.1)
-
-            self.screen.draw_menu(self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
-            self.hardware.start(self.loop)
+            self.loop.create_task(self.screen.start_gif(self.loading))
 
             with self.client:
                 result = os.popen(f"startBristol -jack -midi alsa -autoconn -gui -daemon &")
                 while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
                     await asyncio.sleep(0.5)
+                    print(self.client.get_ports())
+                self.screen.stop_gif()
+                self.screen.draw_menu(self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+                self.hardware.start(self.loop)
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
                         i = 0
