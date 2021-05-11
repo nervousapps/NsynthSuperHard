@@ -154,12 +154,13 @@ class BristolSynth:
                         i = 0
                         print("Stopping bristol")
                         result = os.popen(f"startBristol --kill -{self.current_synth} &")
+                        await asyncio.sleep(2)
                         self.current_synth = self.available_synths[self.current_synth_index]
                         print(f"Synth name : {self.current_synth}")
                         print("Starting bristol")
                         self.loop.create_task(self.screen.start_gif(self.loading))
                         print("Starting bristol")
-                        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -engine &")
+                        result = os.popen(f"startBristol -{self.current_synth} -engine &")
                         print("Bristol started")
                         await asyncio.sleep(2)
                         # for i in range(3):
