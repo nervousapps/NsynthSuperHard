@@ -65,6 +65,7 @@ class BristolSynth:
         self.current_synth_index = 0
         self.synth_index = self.current_synth_index
         self.current_synth = self.available_synths[self.current_synth_index]
+        self.menu_line = (self.available_synths[-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
 
         self.reload = False
 
@@ -135,7 +136,7 @@ class BristolSynth:
 
             with self.client:
                 await asyncio.sleep(2)
-                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa &")
+                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -autoconn &")
                 while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
                     await asyncio.sleep(0.5)
                     print(self.client.get_ports())
