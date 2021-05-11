@@ -91,8 +91,10 @@ class Screen:
         self.oled.image(image)
         self.oled.show()
 
-    def draw_menu(self, previous, current, next):
+    def draw_menu(self, menu_line):
         image, draw = self.create_blank_image()
+
+        previous, current, next = menu_line
 
         (font_width, font_height) = self.font.getsize(current)
 
