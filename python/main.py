@@ -134,24 +134,30 @@ class BristolSynth:
             self.loop.create_task(self.screen.start_gif(self.loading))
 
             with self.client:
-                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa &")
+                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -gui &")
                 while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
                     await asyncio.sleep(0.5)
                     print(self.client.get_ports())
+                for port in self.midi.get_output_names():
+                    if "Arturia" in port:
+                        inport = port
+                    if "bristol" in port:
+                        outport = port
+                self.midi.start(self.loop, inport, outport)
                 self.screen.stop_gif()
                 self.screen.draw_menu(self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
                 self.hardware.start(self.loop)
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
                         i = 0
+                        print("Stopping bristol")
+                        result = os.popen(f"startBristol --kill -{self.current_synth} &")
                         self.current_synth = self.available_synths[self.current_synth_index]
                         print(f"Synth name : {self.current_synth}")
-                        print("Stopping bristol")
-                        result = os.popen("startBristol -exit &")
                         print("Starting bristol")
                         self.loop.create_task(self.screen.start_gif(self.loading))
                         print("Starting bristol")
-                        result = os.popen(f"startBristol -{self.current_synth} -engine &")
+                        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -gui -engine &")
                         print("Bristol started")
                         # for i in range(3):
                         #     try:
