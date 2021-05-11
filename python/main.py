@@ -145,6 +145,7 @@ class BristolSynth:
                     if "bristol" in port:
                         outport = port
                 self.midi.start(self.loop, inport, outport)
+                await asyncio.sleep(2)
                 self.screen.stop_gif()
                 self.screen.draw_menu((self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]))
                 self.hardware.start(self.loop)
@@ -160,6 +161,7 @@ class BristolSynth:
                         print("Starting bristol")
                         result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -engine &")
                         print("Bristol started")
+                        await asyncio.sleep(2)
                         # for i in range(3):
                         #     try:
                         #         self.connect_jack_ports()
