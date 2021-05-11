@@ -92,7 +92,6 @@ class Screen:
         self.oled.show()
 
     def draw_menu(self, previous, current, next):
-        self.clear()
         image, draw = self.create_blank_image()
 
         (font_width, font_height) = self.font.getsize(current)
@@ -102,7 +101,7 @@ class Screen:
             (3, 5),
             f"{previous}\n->   {current}\n{next}",
             font=self.font,
-            fill=0,
+            fill=255,
         )
 
         # Display image
@@ -137,11 +136,13 @@ class Screen:
         self.oled.show()
 
     def stop_gif(self):
-        self.gif_run = True
+        self.gif_run = False
 
     async def start_gif(self, gif_images):
         self.gif_run = True
         while self.gif_run:
             for image in gif_images:
+                if not self.gif_run:
+                    break
                 await self.draw_image(image)
                 await asyncio.sleep(0.1)

@@ -120,9 +120,11 @@ class BristolSynth:
     async def rot1_handler(self, data):
         if data:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
+            self.menu_line = self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1]
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-        self.screen.draw_menu(self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+            self.menu_line = self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]
+        self.screen.draw_menu(self.menu_line)
 
     async def main(self):
         try:
@@ -137,6 +139,9 @@ class BristolSynth:
             self.hardware.start(self.loop)
 
             with self.client:
+                result = os.popen(f"startBristol -jack -midi alsa -autoconn -gui -daemon &")
+                while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
+                    await asyncio.sleep(0.5)
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
                         i = 0
@@ -144,29 +149,21 @@ class BristolSynth:
                         print(f"Synth name : {self.current_synth}")
                         print("Stopping bristol")
                         result = os.popen("startBristol -exit &")
-                        await self.screen.start_gif(self.loading)
-                        while all(port.name in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
-                            await asyncio.sleep(0.5)
-                            if i < len(self.loading)-1:
-                                i+=1
-                            else:
-                                 i=0
                         print("Starting bristol")
-                        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa &")
-                        while all("bristol:bristol input" not in port for port in self.midi.get_output_names()) or all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
-                            await self.screen.draw_image(self.loading[i])
-                            await asyncio.sleep(0.5)
-                            if i < len(self.loading)-1:
-                                i+=1
-                            else:
-                                 i=0
+                        self.loop.create_task(self.screen.start_gif(self.loading))
+                        print("Starting bristol")
+                        result = os.popen(f"startBristol -{self.current_synth} -gui -engine &")
                         print("Bristol started")
-                        for i in range(3):
-                            try:
-                                self.connect_jack_ports()
-                            except Exception as error:
-                                print(f"Retrying to connect jack ports for {i} time")
-                                await asyncio.sleep(1)
+                        # for i in range(3):
+                        #     try:
+                        #         self.connect_jack_ports()
+                        #         break
+                        #     except Exception as error:
+                        #         if i == 2:
+                        #             print(f"##### Unable to connect Jack !")
+                        #             self.screen.draw_text(f"Unable to connect\n Jack !")
+                        #         print(f"##### Retrying to connect jack ports for {i} time")
+                        #         await asyncio.sleep(1)
                         inport, outport = None, None
                         for port in self.midi.get_output_names():
                             if "Arturia" in port:
@@ -175,13 +172,13 @@ class BristolSynth:
                                 outport = port
                         self.midi.start(self.loop, inport, outport)
                         print("All connected")
+                        self.screen.stop_gif()
                         self.screen.draw_text(f"Ready to go !")
-                        await asyncio.sleep(1)
-                        await self.screen.stop_gif()
+                        await asyncio.sleep(2)
                         self.hardware.start(self.loop)
                         self.reload = False
                         print("Ready to go !")
-                        self.screen.draw_text(f"Current synth \n {self.current_synth}")
+                        self.screen.draw_menu(self.menu_line)
                     await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()

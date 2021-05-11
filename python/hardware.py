@@ -92,7 +92,7 @@ class Hardware:
                         await self.pot6_cb(data[11])
                     # Rot1
                     if data[2] != previous_data[2]:
-                        if data[2] > previous_data[2]:
+                        if (data[2] == 0 and previous_data[2] == 255) or data[2] > previous_data[2]:
                             await self.rot1_cb(True)
                         else:
                             await self.rot1_cb(False)
