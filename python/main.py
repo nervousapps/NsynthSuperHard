@@ -185,11 +185,11 @@ class BristolSynth:
                         #             self.screen.draw_text(f"Unable to connect\n Jack !")
                         #         print(f"##### Retrying to connect jack ports for {i} time")
                         #         await asyncio.sleep(1)
-                        # for port in self.midi.get_output_names():
-                        #     if "Arturia" in port:
-                        #         inport = port
-                        #     if "bristol" in port:
-                        #         outport = port
+                        for port in self.midi.get_output_names():
+                            if "Arturia" in port:
+                                inport = port
+                            if "bristol" in port:
+                                outport = port
                         self.midi.start(self.loop, inport, outport)
                         self.screen.stop_gif()
                         self.screen.draw_text(f"Ready to go !")
