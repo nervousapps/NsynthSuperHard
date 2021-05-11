@@ -140,6 +140,17 @@ class BristolSynth:
                 while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
                     await asyncio.sleep(0.5)
                     print(self.client.get_ports())
+                for i in range(3):
+                    try:
+                        self.connect_jack_ports()
+                        break
+                    except Exception as error:
+                        if i == 2:
+                            self.screen.stop_gif()
+                            print(f"##### Unable to connect Jack !")
+                            self.screen.draw_text(f"Unable to connect\n Jack !")
+                        print(f"##### Retrying to connect jack ports for {i} time")
+                        await asyncio.sleep(1)
                 for port in self.midi.get_output_names():
                     if "Arturia" in port:
                         inport = port
@@ -164,16 +175,6 @@ class BristolSynth:
                         result = os.popen(f"startBristol -{self.current_synth} -engine &")
                         print("Bristol started")
                         await asyncio.sleep(2)
-                        # for i in range(3):
-                        #     try:
-                        #         self.connect_jack_ports()
-                        #         break
-                        #     except Exception as error:
-                        #         if i == 2:
-                        #             print(f"##### Unable to connect Jack !")
-                        #             self.screen.draw_text(f"Unable to connect\n Jack !")
-                        #         print(f"##### Retrying to connect jack ports for {i} time")
-                        #         await asyncio.sleep(1)
                         # inport, outport = None, None
                         # for port in self.midi.get_output_names():
                         #     if "Arturia" in port:
