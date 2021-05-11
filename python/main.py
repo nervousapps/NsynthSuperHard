@@ -169,6 +169,7 @@ class BristolSynth:
                         # result = os.popen(f"startBristol --kill -{self.current_synth} &")
                         result = os.popen(f"startBristol -kill -{self.current_synth} &")
                         await asyncio.sleep(2)
+                        self.current_synth = self.available_synths[self.current_synth_index]
                         result = os.popen(f"startBristol -{self.current_synth} -engine &")
                         # while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
                         #     await asyncio.sleep(0.5)
@@ -189,12 +190,12 @@ class BristolSynth:
                         #         inport = port
                         #     if "bristol" in port:
                         #         outport = port
-                        # self.midi.start(self.loop, inport, outport)
+                        self.midi.start(self.loop, inport, outport)
                         self.screen.stop_gif()
                         self.screen.draw_text(f"Ready to go !")
                         await asyncio.sleep(2)
-                        self.hardware.start(self.loop)
                         self.reload = False
+                        self.hardware.start(self.loop)
                         print("Ready to go !")
                         self.screen.draw_menu(self.menu_line)
                     await asyncio.sleep(0.1)
