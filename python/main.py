@@ -45,7 +45,7 @@ class Main:
         self.loading = self.screen.get_loading()
         self.synth_index = 1
         self.current_synth = self.available_synths[self.synth_index]
-        self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index+1]["name"]]
+        self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
 
         self.pressed = True
 
