@@ -136,7 +136,7 @@ class BristolSynth:
         try:
             self.screen.draw_text_box("NsynthSuperHard")
 
-            self.loop.crate_task(self.midi.midi_over_uart_task())
+            self.loop.create_task(self.midi.midi_over_uart_task())
             await asyncio.sleep(60)
 
             with self.client:
