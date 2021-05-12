@@ -103,7 +103,10 @@ class BristolSynth:
         available_ports = self.client.get_ports()
         if not available_ports:
             raise RuntimeError('No available_ports')
-        print(available_ports)
+        print(self.client.inports)
+        print(self.client.outports)
+        print(self.client.midi_inports)
+        print(self.client.midi_outports)
         print(f"Connect {available_ports[2]} to {available_ports[0]}")
         self.client.connect(available_ports[2], available_ports[0])
         self.client.connect(available_ports[3], available_ports[1])
@@ -114,7 +117,7 @@ class BristolSynth:
         result = os.popen(f"startBristol -exit &")
         await asyncio.sleep(2)
         self.current_synth = self.available_synths[self.current_synth_index]
-        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa &")
+        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -autoconn &")
         while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
             await asyncio.sleep(0.5)
             print(self.client.get_ports())
@@ -129,12 +132,12 @@ class BristolSynth:
                     self.screen.draw_text(f"Unable to connect\n Jack !")
                 print(f"##### Retrying to connect jack ports for {i} time")
                 await asyncio.sleep(1)
-        for port in self.midi.get_output_names():
-            if "Arturia" in port:
-                inport = port
-            if "bristol" in port:
-                outport = port
-        self.midi.start(self.loop, inport, outport)
+        # for port in self.midi.get_output_names():
+        #     if "Arturia" in port:
+        #         inport = port
+        #     if "bristol" in port:
+        #         outport = port
+        # self.midi.start(self.loop, inport, outport)
         self.screen.stop_gif()
         self.screen.draw_text(f"Ready to go !")
         await asyncio.sleep(2)
