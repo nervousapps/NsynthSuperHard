@@ -135,7 +135,7 @@ class Bristol:
         self.running = True
         try:
             with self.client:
-                await asyncio.sleep(2)
+                await asyncio.sleep(5)
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(2)
                 try:
