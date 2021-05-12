@@ -70,7 +70,10 @@ class Main:
             while True:
                 try:
                     if self.current_synth:
-                        await self.current_synth["class"]().start(hardware, midi, screen, loop)
+                        await self.current_synth["class"](hardware=hardware,
+                                                          midi=midi,
+                                                          screen=screen,
+                                                          loop=loop).start()
                 except Exception as error:
                     print(f"Main loop exception :{error}")
                     self.screen.draw_text_box('Main loop exception !')
