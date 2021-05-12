@@ -94,18 +94,17 @@ class BristolSynth:
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
         result = os.popen(f"startBristol -exit &")
-        await asyncio.sleep(2)
+        while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
+            self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
+            await asyncio.sleep(0.5)
         self.current_synth = self.available_synths[self.current_synth_index]
         result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
-            # print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
             await asyncio.sleep(0.5)
         while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
             self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
                                 self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
-            # print(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True))
-            # print(self.client.get_ports(is_midi=True, name_pattern='bristol', is_output=True))
             await asyncio.sleep(0.5)
         self.screen.stop_gif()
         self.screen.draw_text(f"Ready to go !")
@@ -128,10 +127,10 @@ class BristolSynth:
     async def rot1_handler(self, data):
         if data:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
-            self.menu_line = (self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1])
+            self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-            self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+            self.menu_line = (self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1])
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
