@@ -40,7 +40,7 @@ class Main:
         self.midi = Midi()
 
         self.loading = self.screen.get_loading()
-        self.current_synth = self.available_synths[0]
+        self.current_synth = None
 
         self.pressed = False
 
