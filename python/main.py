@@ -174,6 +174,7 @@ class BristolSynth:
             self.screen.draw_text_box("NsynthSuperHard")
 
             with self.client:
+                result = os.popen(f"jackd -d alsa -X raw &")
                 await asyncio.sleep(2)
                 await self.start_bristol_emu()
                 while True:
