@@ -1,6 +1,8 @@
 import os
 import asyncio
 import jack
+import fluidsynth
+
 
 class FluidSynth:
     def __init__(self, hardware, midi, screen, loop):
@@ -29,12 +31,16 @@ class FluidSynth:
         self.loop = loop
         self.screen = screen
 
+        self.preset_num = 0
+        self.bank_num = 0
+
         # Init jack client
         self.client = jack.Client('FluidSynthClient')
 
         self.reload = False
         self.running = False
         self.loading = self.screen.get_loading()
+        self.fs = fluidsynth.Synth()
 
     async def b1_handler(self):
         self.reload = True
@@ -43,7 +49,7 @@ class FluidSynth:
         pass
 
     async def rot1_handler(self, data):
-        self.reload = True
+        self.preset_num += 1
 
     def stop(self):
         self.running = False
@@ -57,9 +63,11 @@ class FluidSynth:
                 result = os.popen(f"a2jmidid -e")
                 self.screen.stop_gif()
                 await asyncio.sleep(2)
-                result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
+                # result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
-                await asyncio.sleep(4)
+                self.fs.start()
+                sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
+                self.fs.program_select(track=0, soundfontid=sfid, banknum=0, presetnum=0)
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
                     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
                     try:
@@ -70,8 +78,10 @@ class FluidSynth:
                     await asyncio.sleep(0.5)
                 while self.running:
                     await asyncio.sleep(1)
+                self.fs.delete()
         except KeyboardInterrupt:
             self.midi.stop()
             self.hardware.stop()
             self.screen.stop()
             self.loop.close()
+            self.fs.delete()
