@@ -66,4 +66,4 @@ class Midi:
             elif messagetype == 12: # Program change
                 print('Program change')
             # outport.send(mido.Message(messagetype, channel=messagechannel, note=note, velocity=velocity))
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0.05)
