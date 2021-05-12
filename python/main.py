@@ -123,8 +123,10 @@ class BristolSynth:
             await asyncio.sleep(0.5)
             print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
             print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]))
-        print(self.client.get_ports(is_audio=True))
-        print(self.client.get_ports(is_midi=True))
+        print(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True))
+        print(self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True))
+        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True),
+                            self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True))
         # for i in range(3):
         #     try:
         #         self.connect_jack_ports()
