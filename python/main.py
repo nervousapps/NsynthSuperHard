@@ -108,7 +108,7 @@ class BristolSynth:
         self.client.connect(available_ports[2], available_ports[0])
         self.client.connect(available_ports[3], available_ports[1])
 
-    def :
+    def start_bristol_emu():
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
         result = os.popen(f"startBristol -exit &")
