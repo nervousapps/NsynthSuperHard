@@ -136,9 +136,7 @@ class BristolSynth:
             self.screen.draw_text_box("NsynthSuperHard")
 
             with self.client:
-                while True:
-                    print(self.client.status)
-                    await asyncio.sleep(0.5)
+                await asyncio.sleep(1)
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
                 await self.start_bristol_emu()
