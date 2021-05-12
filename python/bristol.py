@@ -135,12 +135,14 @@ class Bristol:
 
     async def start(self):
         self.running = True
+        self.loop.create_task(self.screen.start_gif(self.loading))
         try:
             with self.client:
                 await asyncio.sleep(5)
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(2)
                 try:
+                    self.screen.stop_gif()
                     await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                 except asyncio.TimeoutError:
                     print('timeout!')
