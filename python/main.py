@@ -100,7 +100,7 @@ class BristolSynth:
         self.current_synth = self.available_synths[self.current_synth_index]
         result = os.popen(f"startBristol -{self.current_synth} -engine &")
         await asyncio.sleep(5)
-        result = os.popen(f"startBristol -kill  -{self.current_synth}&")
+        # result = os.popen(f"startBristol -kill  -{self.current_synth}&")
         # result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
