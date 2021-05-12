@@ -176,7 +176,7 @@ class BristolSynth:
             with self.client:
                 await asyncio.sleep(1)
                 result = os.popen(f"a2jmidid -e")
-                wait asyncio.sleep(1)
+                await asyncio.sleep(1)
                 await self.start_bristol_emu()
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
