@@ -93,12 +93,15 @@ class BristolSynth:
     async def start_bristol_emu(self):
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
-        result = os.popen(f"startBristol -exit &")
-        while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
-            self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
-            await asyncio.sleep(0.5)
+        # result = os.popen(f"startBristol -kill  -{self.current_synth}&")
+        # while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
+        #     self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
+        #     await asyncio.sleep(0.5)
         self.current_synth = self.available_synths[self.current_synth_index]
-        result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
+        result = os.popen(f"startBristol -{self.current_synth} -engine &")
+        await asyncio.sleep(5)
+        result = os.popen(f"startBristol -kill  -{self.current_synth}&")
+        # result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
             await asyncio.sleep(0.5)
@@ -145,6 +148,7 @@ class BristolSynth:
                 await asyncio.sleep(1)
                 try:
                     await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                    result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
                 except asyncio.TimeoutError:
                     print('timeout!')
                     self.screen.draw_text_box(f"{self.current_synth} is not available ...")
