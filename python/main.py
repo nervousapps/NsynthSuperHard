@@ -136,7 +136,8 @@ class BristolSynth:
             self.screen.draw_text_box("NsynthSuperHard")
 
             with self.client:
-                while not self.client.server_started:
+                while self.client.status not in [jack.Status.server_started]:
+                    print(self.client.status)
                     await asyncio.sleep(0.5)
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
