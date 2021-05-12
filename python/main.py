@@ -89,7 +89,7 @@ class Main:
                                                           screen=self.screen,
                                                           loop=self.loop) #self.current_synth:
                         await self.current_synth.start()
-                        self.menu_line = ("", self.available_synths[self.synth_index]["name"], "")
+                        self.menu_line = ["", self.available_synths[self.synth_index]["name"], ""]
                         self.screen.draw_menu(self.menu_line)
                 except Exception as error:
                     print(f"Main loop exception :{error}")
