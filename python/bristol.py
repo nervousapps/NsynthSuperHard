@@ -155,6 +155,7 @@ class Bristol:
                             self.screen.draw_text_box(f"{self.current_synth} is not available ...")
                             self.current_synth == self.available_synths[self.current_synth_index]
                             await asyncio.sleep(2)
+                        self.reload = False
                     await asyncio.sleep(0.1)
                 result = os.popen("startBristol -exit &")
         except KeyboardInterrupt:
