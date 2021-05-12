@@ -42,11 +42,14 @@ class Main:
         self.loading = self.screen.get_loading()
         self.current_synth = self.available_synths[0]
 
+        self.pressed = False
+
     async def b1_handler(self):
         print(f"Button main handler")
         if self.current_synth:
             self.current_synth["class"]().stop()
         self.current_synth = self.available_synths[0]
+        self.pressed = True
 
 
     async def null_handler(self, data):
@@ -65,15 +68,19 @@ class Main:
     async def main(self):
         try:
             self.screen.draw_text_box("NsynthSuperHard")
+            self.hardware.start(self.loop)
 
             # self.loop.create_task(self.midi.midi_over_uart_task())
+            
             while True:
                 try:
-                    if self.current_synth:
+                    if pressed:#self.current_synth:
                         await self.current_synth["class"](hardware=self.hardware,
                                                           midi=self.midi,
                                                           screen=self.screen,
                                                           loop=self.loop).start()
+                        self.menu_line = ("", self.available_synths[self.synth_index], "")
+                        self.screen.draw_menu(self.menu_line)
                 except Exception as error:
                     print(f"Main loop exception :{error}")
                     self.screen.draw_text_box('Main loop exception !')

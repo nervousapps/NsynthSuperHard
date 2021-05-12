@@ -7,7 +7,7 @@ class Bristol:
         self.hardware.b1_cb = self.b1_handler
         self.hardware.b2_cb = self.null_handler
         self.hardware.b3_cb = self.null_handler
-        self.hardware.b4_cb = self.null_handler 
+        self.hardware.b4_cb = self.null_handler
 
 
         self.hardware.pot1_cb = self.null_handler
@@ -128,10 +128,10 @@ class Bristol:
             self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
         self.screen.draw_menu(self.menu_line)
 
-    def stop():
+    def stop(self):
         self.running = False
 
-    async def start():
+    async def start(self):
         self.running = True
         try:
             with self.client:
