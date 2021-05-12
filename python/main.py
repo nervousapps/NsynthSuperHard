@@ -71,10 +71,10 @@ class Main:
             self.hardware.start(self.loop)
 
             # self.loop.create_task(self.midi.midi_over_uart_task())
-            
+
             while True:
                 try:
-                    if pressed:#self.current_synth:
+                    if self.pressed: #self.current_synth:
                         await self.current_synth["class"](hardware=self.hardware,
                                                           midi=self.midi,
                                                           screen=self.screen,
