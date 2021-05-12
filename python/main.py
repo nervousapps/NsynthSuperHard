@@ -9,7 +9,7 @@ from midi import Midi
 from bristol import Bristol
 
 
-class BristolSynth:
+class Main:
     def __init__(self, loop):
         self.loop = loop
 
@@ -40,6 +40,7 @@ class BristolSynth:
         self.midi = Midi()
 
         self.loading = self.screen.get_loading()
+        self.current_synth = self.available_synths[0]
 
     async def b1_handler(self):
         print(f"Button main handler")
@@ -84,4 +85,4 @@ class BristolSynth:
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(BristolSynth(loop).main())
+    loop.run_until_complete(Main(loop).main())
