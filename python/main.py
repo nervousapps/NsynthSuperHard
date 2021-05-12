@@ -136,7 +136,7 @@ class BristolSynth:
 
             with self.client:
                 await asyncio.sleep(2)
-                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -gui &")
+                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa &")
                 while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
                     await asyncio.sleep(0.5)
                     print(self.client.get_ports())
