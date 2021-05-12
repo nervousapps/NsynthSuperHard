@@ -95,12 +95,11 @@ class BristolSynth:
         self.midi.stop()
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
-        result = os.popen(f"startBristol -kill  -{self.current_synth}&")
+        result = os.popen(f"startBristol -exit &")
         while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
             await asyncio.sleep(0.5)
         self.current_synth = self.available_synths[self.current_synth_index]
-        result = os.popen(f"startBristol -kill  -{self.current_synth}&")
         result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
@@ -140,9 +139,9 @@ class BristolSynth:
             # self.loop.create_task(self.midi.midi_over_uart_task())
 
             with self.client:
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
                 result = os.popen(f"a2jmidid -e")
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
                 try:
                     await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                 except asyncio.TimeoutError:
