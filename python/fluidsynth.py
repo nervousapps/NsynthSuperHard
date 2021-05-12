@@ -64,7 +64,7 @@ class FluidSynth:
                     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
                     try:
                         self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                            self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
+                                            self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
                     except Exception as error:
                         print(error)
                     await asyncio.sleep(0.5)
