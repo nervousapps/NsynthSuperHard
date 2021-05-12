@@ -130,10 +130,9 @@ class BristolSynth:
     async def rot1_handler(self, data):
         if data:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
-            self.menu_line = (self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1])
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-            self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+        self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
@@ -147,8 +146,15 @@ class BristolSynth:
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
                 try:
+                    self.loop.create_task(self.screen.start_gif(self.loading))
                     # await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                     result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
+                    self.screen.stop_gif()
+                    self.screen.draw_text(f"Ready to go !")
+                    await asyncio.sleep(2)
+                    self.screen.draw_menu(self.menu_line)
+                    self.hardware.start(self.loop)
+                    print("Ready to go !")
                 except asyncio.TimeoutError:
                     print('timeout!')
                     self.screen.draw_text_box(f"{self.current_synth} is not available ...")
