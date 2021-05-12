@@ -99,10 +99,13 @@ class BristolSynth:
         result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
+            print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
             await asyncio.sleep(0.5)
         while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
             self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
                                 self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
+            print(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True))
+            print(self.client.get_ports(is_midi=True, name_pattern='bristol', is_output=True))
             await asyncio.sleep(0.5)
         self.screen.stop_gif()
         self.screen.draw_text(f"Ready to go !")
