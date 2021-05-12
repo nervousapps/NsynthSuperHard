@@ -147,7 +147,7 @@ class BristolSynth:
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
                 try:
-                    await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                    # await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                     result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
                 except asyncio.TimeoutError:
                     print('timeout!')
