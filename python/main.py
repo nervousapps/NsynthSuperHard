@@ -149,6 +149,7 @@ class BristolSynth:
                     self.loop.create_task(self.screen.start_gif(self.loading))
                     # await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                     result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
+                    await asyncio.sleep(2)
                     self.screen.stop_gif()
                     self.screen.draw_text(f"Ready to go !")
                     await asyncio.sleep(2)
