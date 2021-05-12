@@ -105,8 +105,8 @@ class BristolSynth:
             raise RuntimeError('No available_ports')
         print(self.client.get_ports(is_audio=True))
         print(self.client.get_ports(is_midi=True))
-        print(self.client.get_ports(is_midi=True, name_pattern='bristol'))
-        print(self.client.get_all_connections({available_ports[2]}))
+        print(self.client.get_ports(is_output=True, is_audio=True, name_pattern='bristol'))
+        print(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback'))
         print(f"Connect {available_ports[2]} to {available_ports[0]}")
         # self.client.connect(available_ports[2], available_ports[0])
         # self.client.connect(available_ports[3], available_ports[1])
@@ -121,17 +121,18 @@ class BristolSynth:
         while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
             await asyncio.sleep(0.5)
             print(self.client.get_ports())
-        for i in range(3):
-            try:
-                self.connect_jack_ports()
-                break
-            except Exception as error:
-                if i == 2:
-                    self.screen.stop_gif()
-                    print(f"##### Unable to connect Jack !")
-                    self.screen.draw_text(f"Unable to connect\n Jack !")
-                print(f"##### Retrying to connect jack ports for {i} time")
-                await asyncio.sleep(1)
+        print(get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
+        # for i in range(3):
+        #     try:
+        #         self.connect_jack_ports()
+        #         break
+        #     except Exception as error:
+        #         if i == 2:
+        #             self.screen.stop_gif()
+        #             print(f"##### Unable to connect Jack !")
+        #             self.screen.draw_text(f"Unable to connect\n Jack !")
+        #         print(f"##### Retrying to connect jack ports for {i} time")
+        #         await asyncio.sleep(1)
         # for port in self.midi.get_output_names():
         #     if "Arturia" in port:
         #         inport = port
