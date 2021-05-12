@@ -91,17 +91,17 @@ class BristolSynth:
         self.loading = self.screen.get_loading()
 
     async def start_bristol_emu(self):
+        self.hardware.stop()
+        self.midi.stop()
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
-        # result = os.popen(f"startBristol -kill  -{self.current_synth}&")
-        # while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
-        #     self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
-        #     await asyncio.sleep(0.5)
+        result = os.popen(f"startBristol -kill  -{self.current_synth}&")
+        while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
+            self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
+            await asyncio.sleep(0.5)
         self.current_synth = self.available_synths[self.current_synth_index]
-        result = os.popen(f"startBristol -{self.current_synth} -engine &")
-        await asyncio.sleep(5)
-        # result = os.popen(f"startBristol -kill  -{self.current_synth}&")
-        # result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
+        result = os.popen(f"startBristol -kill  -{self.current_synth}&")
+        result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
             await asyncio.sleep(0.5)
@@ -121,8 +121,6 @@ class BristolSynth:
         self.current_synth_index = self.synth_index
         print(f"Button handler : {self.current_synth_index}")
         self.reload = True
-        self.hardware.stop()
-        self.midi.stop()
 
     async def null_handler(self, data):
         pass
@@ -146,16 +144,7 @@ class BristolSynth:
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
                 try:
-                    self.loop.create_task(self.screen.start_gif(self.loading))
-                    # await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
-                    result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
-                    await asyncio.sleep(2)
-                    self.screen.stop_gif()
-                    self.screen.draw_text(f"Ready to go !")
-                    await asyncio.sleep(2)
-                    self.screen.draw_menu(self.menu_line)
-                    self.hardware.start(self.loop)
-                    print("Ready to go !")
+                    await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                 except asyncio.TimeoutError:
                     print('timeout!')
                     self.screen.draw_text_box(f"{self.current_synth} is not available ...")
