@@ -129,7 +129,7 @@ class BristolSynth:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-        self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+        self.menu_line = (self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1])
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
