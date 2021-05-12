@@ -108,8 +108,8 @@ class BristolSynth:
         print(self.client.midi_inports)
         print(self.client.midi_outports)
         print(f"Connect {available_ports[2]} to {available_ports[0]}")
-        self.client.connect(available_ports[2], available_ports[0])
-        self.client.connect(available_ports[3], available_ports[1])
+        # self.client.connect(available_ports[2], available_ports[0])
+        # self.client.connect(available_ports[3], available_ports[1])
 
     async def start_bristol_emu(self):
         self.loop.create_task(self.screen.start_gif(self.loading))
@@ -117,7 +117,7 @@ class BristolSynth:
         result = os.popen(f"startBristol -exit &")
         await asyncio.sleep(2)
         self.current_synth = self.available_synths[self.current_synth_index]
-        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa -autoconn &")
+        result = os.popen(f"startBristol -{self.current_synth} -jack alsa -autoconn &")
         while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
             await asyncio.sleep(0.5)
             print(self.client.get_ports())
