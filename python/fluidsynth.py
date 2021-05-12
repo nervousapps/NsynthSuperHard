@@ -59,6 +59,12 @@ class FluidSynth:
                 await asyncio.sleep(2)
                 result = os.popen(f"fluidsynth -a jack -j -n -i /usr/share/sounds/sf2/FluidR3_GM.sf2 EvilWays.mid &")
                 self.screen.draw_text_box(f"FluidSynth")
+                await asyncio.sleep(4)
+                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
+                    print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
+                    self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                                        self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
+                    await asyncio.sleep(0.5)
                 while self.running:
                     await asyncio.sleep(1)
         except KeyboardInterrupt:
@@ -66,4 +72,3 @@ class FluidSynth:
             self.hardware.stop()
             self.screen.stop()
             self.loop.close()
-            result = os.popen("startBristol -exit &")
