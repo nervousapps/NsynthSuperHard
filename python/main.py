@@ -108,6 +108,41 @@ class BristolSynth:
         self.client.connect(available_ports[2], available_ports[0])
         self.client.connect(available_ports[3], available_ports[1])
 
+    def :
+        self.loop.create_task(self.screen.start_gif(self.loading))
+        print("Stopping bristol")
+        result = os.popen(f"startBristol -exit &")
+        await asyncio.sleep(2)
+        self.current_synth = self.available_synths[self.current_synth_index]
+        result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa &")
+        while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
+            await asyncio.sleep(0.5)
+            print(self.client.get_ports())
+        for i in range(3):
+            try:
+                self.connect_jack_ports()
+                break
+            except Exception as error:
+                if i == 2:
+                    self.screen.stop_gif()
+                    print(f"##### Unable to connect Jack !")
+                    self.screen.draw_text(f"Unable to connect\n Jack !")
+                print(f"##### Retrying to connect jack ports for {i} time")
+                await asyncio.sleep(1)
+        for port in self.midi.get_output_names():
+            if "Arturia" in port:
+                inport = port
+            if "bristol" in port:
+                outport = port
+        self.midi.start(self.loop, inport, outport)
+        self.screen.stop_gif()
+        self.screen.draw_text(f"Ready to go !")
+        await asyncio.sleep(2)
+        self.reload = False
+        self.screen.draw_menu(self.menu_line)
+        self.hardware.start(self.loop)
+        print("Ready to go !")
+
     async def b1_handler(self):
         self.current_synth_index = self.synth_index
         print(f"Button handler : {self.current_synth_index}")
@@ -130,74 +165,13 @@ class BristolSynth:
     async def main(self):
         try:
             self.screen.draw_text_box("NsynthSuperHard")
-            await asyncio.sleep(2)
-
-            self.loop.create_task(self.screen.start_gif(self.loading))
 
             with self.client:
                 await asyncio.sleep(2)
-                result = os.popen(f"startBristol -{self.current_synth} -jack -midi alsa  -p 1993 &")
-                while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
-                    await asyncio.sleep(0.5)
-                    print(self.client.get_ports())
-                for i in range(3):
-                    try:
-                        self.connect_jack_ports()
-                        break
-                    except Exception as error:
-                        if i == 2:
-                            self.screen.stop_gif()
-                            print(f"##### Unable to connect Jack !")
-                            self.screen.draw_text(f"Unable to connect\n Jack !")
-                        print(f"##### Retrying to connect jack ports for {i} time")
-                        await asyncio.sleep(1)
-                for port in self.midi.get_output_names():
-                    if "Arturia" in port:
-                        inport = port
-                    if "bristol" in port:
-                        outport = port
-                self.midi.start(self.loop, inport, outport)
-                await asyncio.sleep(2)
-                self.screen.stop_gif()
-                self.screen.draw_menu((self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]))
-                self.hardware.start(self.loop)
+                self.start_bristol_emu()
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
-                        i = 0
-                        self.loop.create_task(self.screen.start_gif(self.loading))
-                        print("Stopping bristol")
-                        # result = os.popen(f"startBristol --kill -{self.current_synth} &")
-                        result = os.popen(f"startBristol -kill -{self.current_synth} &")
-                        await asyncio.sleep(2)
-                        self.current_synth = self.available_synths[self.current_synth_index]
-                        result = os.popen(f"startBristol -{self.current_synth} -engine -p 1993 &")
-                        # while all(port.name not in ['bristol:out_left', 'bristol:out_right'] for port in self.client.get_ports()):
-                        #     await asyncio.sleep(0.5)
-                        #     print(self.client.get_ports())
-                        # for i in range(3):
-                        #     try:
-                        #         self.connect_jack_ports()
-                        #         break
-                        #     except Exception as error:
-                        #         if i == 2:
-                        #             self.screen.stop_gif()
-                        #             print(f"##### Unable to connect Jack !")
-                        #             self.screen.draw_text(f"Unable to connect\n Jack !")
-                        #         print(f"##### Retrying to connect jack ports for {i} time")
-                        #         await asyncio.sleep(1)
-                        for port in self.midi.get_output_names():
-                            if "Arturia" in port:
-                                inport = port
-                            if "bristol" in port:
-                                outport = port
-                        self.midi.start(self.loop, inport, outport)
-                        self.screen.stop_gif()
-                        self.screen.draw_text(f"Ready to go !")
-                        await asyncio.sleep(2)
-                        self.reload = False
-                        self.hardware.start(self.loop)
-                        print("Ready to go !")
-                        self.screen.draw_menu(self.menu_line)
+                        self.start_bristol_emu()
                     await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
