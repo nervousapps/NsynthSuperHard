@@ -71,7 +71,7 @@ class BristolSynth:
                     if self.current_synth:
                         await self.current_synth["func"]().start(hardware, midi, screen, loop)
                 except Exception as error:
-                    print('Main loop exception !')
+                    print(f"Main loop exception :{error}")
                     self.screen.draw_text_box('Main loop exception !')
                     await asyncio.sleep(2)
                 await asyncio.sleep(0.1)
