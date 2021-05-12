@@ -125,8 +125,8 @@ class BristolSynth:
             print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]))
         print(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True))
         print(self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True))
-        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True),
-                            self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True))
+        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                            self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
         # for i in range(3):
         #     try:
         #         self.connect_jack_ports()
