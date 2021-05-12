@@ -140,10 +140,20 @@ class BristolSynth:
                 await asyncio.sleep(1)
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
-                await self.start_bristol_emu()
+                try:
+                    await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                except asyncio.TimeoutError:
+                    print('timeout!')
+                    self.screen.draw_text_box(f"{self.current_synth} is not available ...")
+                    await asyncio.sleep(2)
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
-                        await self.start_bristol_emu()
+                        try:
+                            await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                        except asyncio.TimeoutError:
+                            print('timeout!')
+                            self.screen.draw_text_box(f"{self.current_synth} is not available ...")
+                            await asyncio.sleep(2)
                     await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
