@@ -156,6 +156,7 @@ class BristolSynth:
                         except asyncio.TimeoutError:
                             print('timeout!')
                             self.screen.draw_text_box(f"{self.current_synth} is not available ...")
+                            self.current_synth == self.available_synths[self.current_synth_index]
                             await asyncio.sleep(2)
                     await asyncio.sleep(0.1)
         except KeyboardInterrupt:
