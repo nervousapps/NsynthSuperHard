@@ -108,7 +108,7 @@ class BristolSynth:
         self.client.connect(available_ports[2], available_ports[0])
         self.client.connect(available_ports[3], available_ports[1])
 
-    def start_bristol_emu():
+    async def start_bristol_emu():
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
         result = os.popen(f"startBristol -exit &")
@@ -168,10 +168,10 @@ class BristolSynth:
 
             with self.client:
                 await asyncio.sleep(2)
-                self.start_bristol_emu()
+                await self.start_bristol_emu()
                 while True:
                     if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
-                        self.start_bristol_emu()
+                        await self.start_bristol_emu()
                     await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
