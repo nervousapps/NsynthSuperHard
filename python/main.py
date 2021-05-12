@@ -45,7 +45,7 @@ class Main:
     async def b1_handler(self):
         print(f"Button main handler")
         if self.current_synth:
-            self.current_synth["func"]().stop()
+            self.current_synth["class"]().stop()
         self.current_synth = self.available_synths[0]
 
 
@@ -70,7 +70,7 @@ class Main:
             while True:
                 try:
                     if self.current_synth:
-                        await self.current_synth["func"]().start(hardware, midi, screen, loop)
+                        await self.current_synth["class"]().start(hardware, midi, screen, loop)
                 except Exception as error:
                     print(f"Main loop exception :{error}")
                     self.screen.draw_text_box('Main loop exception !')
