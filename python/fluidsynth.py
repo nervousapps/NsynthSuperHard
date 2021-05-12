@@ -57,7 +57,7 @@ class FluidSynth:
                 result = os.popen(f"a2jmidid -e")
                 self.screen.stop_gif()
                 await asyncio.sleep(2)
-                result = os.popen(f"fluidsynth -a jack -j -n -i /usr/share/sounds/sf2/FluidR3_GM.sf2 EvilWays.mid &")
+                result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
                 await asyncio.sleep(4)
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
