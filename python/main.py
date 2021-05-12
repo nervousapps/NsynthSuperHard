@@ -90,27 +90,6 @@ class BristolSynth:
 
         self.loading = self.screen.get_loading()
 
-    def connect_jack_ports(self):
-        # When entering this with-statement, client.activate() is called.
-        # This tells the JACK server that we are ready to roll.
-        # Our process() callback will start running now.
-
-        # Connect the ports.  You can't do this before the client is activated,
-        # because we can't make connections to clients that aren't running.
-        # Note the confusing (but necessary) orientation of the driver backend
-        # ports: playback ports are "input" to the backend, and capture ports
-        # are "output" from it.
-        available_ports = self.client.get_ports()
-        if not available_ports:
-            raise RuntimeError('No available_ports')
-        print(self.client.get_ports(is_audio=True))
-        print(self.client.get_ports(is_midi=True))
-        print(self.client.get_ports(is_output=True, is_audio=True, name_pattern='bristol'))
-        print(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback'))
-        print(f"Connect {available_ports[2]} to {available_ports[0]}")
-        # self.client.connect(available_ports[2], available_ports[0])
-        # self.client.connect(available_ports[3], available_ports[1])
-
     async def start_bristol_emu(self):
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
@@ -121,29 +100,10 @@ class BristolSynth:
         while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
             await asyncio.sleep(0.5)
-            print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
-            print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]))
-        print(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True))
-        print(self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True))
-        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                            self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
-        # for i in range(3):
-        #     try:
-        #         self.connect_jack_ports()
-        #         break
-        #     except Exception as error:
-        #         if i == 2:
-        #             self.screen.stop_gif()
-        #             print(f"##### Unable to connect Jack !")
-        #             self.screen.draw_text(f"Unable to connect\n Jack !")
-        #         print(f"##### Retrying to connect jack ports for {i} time")
-        #         await asyncio.sleep(1)
-        # for port in self.midi.get_output_names():
-        #     if "Arturia" in port:
-        #         inport = port
-        #     if "bristol" in port:
-        #         outport = port
-        # self.midi.start(self.loop, inport, outport)
+        while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
+            self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                                self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
+            await asyncio.sleep(0.5)
         self.screen.stop_gif()
         self.screen.draw_text(f"Ready to go !")
         await asyncio.sleep(2)
@@ -176,7 +136,8 @@ class BristolSynth:
             self.screen.draw_text_box("NsynthSuperHard")
 
             with self.client:
-                await asyncio.sleep(1)
+                while not self.client.server_started:
+                    await asyncio.sleep(0.5)
                 result = os.popen(f"a2jmidid -e")
                 await asyncio.sleep(1)
                 await self.start_bristol_emu()
