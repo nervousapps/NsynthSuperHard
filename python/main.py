@@ -136,6 +136,9 @@ class BristolSynth:
         try:
             self.screen.draw_text_box("NsynthSuperHard")
 
+            self.loop.crate_task(self.midi.midi_over_uart_task())
+            await asyncio.sleep(60)
+
             with self.client:
                 await asyncio.sleep(1)
                 result = os.popen(f"a2jmidid -e")
