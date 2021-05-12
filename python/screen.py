@@ -94,7 +94,7 @@ class Screen:
     def draw_menu(self, menu_line):
         image, draw = self.create_blank_image()
 
-        previous, current, next = menu_line
+        previous, current, next = menu_line[0], menu_line[1], menu_line[2]
 
         (font_width, font_height) = self.font.getsize(current)
 

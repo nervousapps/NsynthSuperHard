@@ -6,7 +6,9 @@ import jack
 from hardware import Hardware
 from screen import Screen
 from midi import Midi
+
 from bristol import Bristol
+from fluidsynth import FluidSynth
 
 
 class Main:
@@ -15,7 +17,8 @@ class Main:
 
         # Get the list of available synths
         self.available_synths = [
-            {"name": "BRISTOL", "class": Bristol}
+            {"name": "BRISTOL", "class": Bristol},
+            {"name": "FluidSynth", "class": FluidSynth}
         ]
 
         self.reload = False
@@ -40,9 +43,11 @@ class Main:
         self.midi = Midi()
 
         self.loading = self.screen.get_loading()
-        self.current_synth = None
+        self.synth_index = 1
+        self.current_synth = self.available_synths[self.synth_index]
+        self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index+1]["name"]]
 
-        self.pressed = False
+        self.pressed = True
 
     async def b1_handler(self):
         print(f"Button main handler")
@@ -51,7 +56,7 @@ class Main:
             self.current_synth = None
             self.pressed = False
         else:
-            self.current_synth = self.available_synths[0]["class"](
+            self.current_synth = self.available_synths[self.synth_index]["class"](
                                               hardware=self.hardware,
                                               midi=self.midi,
                                               screen=self.screen,
@@ -63,18 +68,19 @@ class Main:
         pass
 
     async def rot1_handler(self, data):
-        # if data:
-        #     self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
-        #     self.menu_line = ("", self.available_synths[self.synth_index], "")
-        # else:
-        #     self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-        #     self.menu_line = ("", self.available_synths[self.synth_index], "")
-        self.menu_line = ("", self.available_synths[0]["name"], "")
+        if data:
+            self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
+            self.menu_line = ("", self.available_synths[0], self.available_synths[1])
+        else:
+            self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
+            self.menu_line = ("", self.available_synths[1], self.available_synths[0])
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
         try:
             self.screen.draw_text_box("NsynthSuperHard")
+            await asyncio.sleep(2)
+            self.screen.draw_menu(self.menu_line)
             self.hardware.start(self.loop)
 
             # self.loop.create_task(self.midi.midi_over_uart_task())
@@ -83,7 +89,7 @@ class Main:
                 try:
                     if self.pressed: #self.current_synth:
                         await self.current_synth.start()
-                        self.menu_line = ("", self.available_synths[0]["name"], "")
+                        self.menu_line = ("", self.available_synths[self.synth_index]["name"], "")
                         self.screen.draw_menu(self.menu_line)
                 except Exception as error:
                     print(f"Main loop exception :{error}")

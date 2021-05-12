@@ -76,12 +76,12 @@ class Bristol:
         ]
 
         # Init jack client
-        self.client = jack.Client('MyGreatClient')
+        self.client = jack.Client('BristolClient')
 
         self.current_synth_index = 0
         self.synth_index = self.current_synth_index
         self.current_synth = self.available_synths[self.current_synth_index]
-        self.menu_line = (self.available_synths[-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+        self.menu_line = [self.available_synths[-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]]
 
         self.reload = False
         self.running = False
@@ -124,10 +124,10 @@ class Bristol:
     async def rot1_handler(self, data):
         if data:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
-            self.menu_line = (self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1])
+            self.menu_line = [self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1]]
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-            self.menu_line = (self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1])
+            self.menu_line = [self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]]
         self.screen.draw_menu(self.menu_line)
 
     def stop(self):
@@ -140,9 +140,9 @@ class Bristol:
             with self.client:
                 await asyncio.sleep(5)
                 result = os.popen(f"a2jmidid -e")
+                self.screen.stop_gif()
                 await asyncio.sleep(2)
                 try:
-                    self.screen.stop_gif()
                     await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
                 except asyncio.TimeoutError:
                     print('timeout!')
