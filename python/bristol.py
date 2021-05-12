@@ -85,6 +85,7 @@ class Bristol:
 
         self.reload = False
         self.running = False
+        self.loading = self.screen.get_loading()
 
     async def start_bristol_emu(self):
         self.hardware.stop()
