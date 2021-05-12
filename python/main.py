@@ -47,9 +47,16 @@ class Main:
     async def b1_handler(self):
         print(f"Button main handler")
         if self.current_synth:
-            self.current_synth["class"]().stop()
-        self.current_synth = self.available_synths[0]
-        self.pressed = True
+            self.current_synth.stop()
+            self.current_synth = None
+            self.pressed = False
+        else:
+            self.current_synth = self.available_synths[0]["class"](
+                                              hardware=self.hardware,
+                                              midi=self.midi,
+                                              screen=self.screen,
+                                              loop=self.loop)
+            self.pressed = True
 
 
     async def null_handler(self, data):
@@ -62,7 +69,7 @@ class Main:
         # else:
         #     self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
         #     self.menu_line = ("", self.available_synths[self.synth_index], "")
-        self.menu_line = ("", self.available_synths[self.synth_index], "")
+        self.menu_line = ("", self.available_synths[0], "")
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
@@ -75,10 +82,7 @@ class Main:
             while True:
                 try:
                     if self.pressed: #self.current_synth:
-                        await self.current_synth["class"](hardware=self.hardware,
-                                                          midi=self.midi,
-                                                          screen=self.screen,
-                                                          loop=self.loop).start()
+                        await self.current_synth.start()
                         self.menu_line = ("", self.available_synths[self.synth_index], "")
                         self.screen.draw_menu(self.menu_line)
                 except Exception as error:
