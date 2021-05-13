@@ -22,7 +22,7 @@ class Hardware:
         self.button2 = Button(6, bounce_time=BOUNCE)
         self.button3 = Button(13, bounce_time=BOUNCE)
         self.button4 = Button(26, bounce_time=BOUNCE)
-        self.b1_cb = b1_cb
+        self.b1_cb, self.b1_lp_cb = b1_cb
         self.b2_cb = b2_cb
         self.b3_cb = b3_cb
         self.b4_cb = b4_cb
@@ -123,11 +123,16 @@ class Hardware:
 
     async def check_buttons_task(self):
         print("################ In check buttons task")
+        last_hold = 0
         while self.running:
             try:
                 if self.button1.is_pressed:
                   print(f"Hold time : {self.button1.held_time}")
-                  await self.b1_cb()
+                  if self.button1.held_time > last_hold + 5:
+                      last_hold = self.button1.held_time
+                      await self.b1_lp_cb()
+                  else:
+                      await self.b1_cb()
                 if self.button2.is_pressed:
                   print("Pressed")
                   await self.b2_cb()

@@ -32,7 +32,7 @@ class Main:
         self.pressed = False
 
         self.hardware = Hardware(self.loop,
-                                 self.b1_handler,
+                                 (self.b1_handler, self.b1_lp_handler),
                                  self.null_button_handler,
                                  self.null_button_handler,
                                  self.null_button_handler,
@@ -58,6 +58,29 @@ class Main:
             self.pressed = False
         else:
             self.pressed = True
+
+    async def b1_lp_handler(self):
+        print(f"Button long press main handler")
+        if self.current_synth:
+            self.current_synth.stop()
+            self.current_synth = None
+            self.pressed = False
+        self.hardware.b1_cb, self.hardware.b1_lp_cb = self.b1_handler, self.b1_lp_cb
+        self.hardware.b2_cb = self.null_button_handler
+        self.hardware.b3_cb = self.null_button_handler
+        self.hardware.b4_cb = self.null_button_handler
+        self.hardware.pot1_cb = self.null_handler
+        self.hardware.pot2_cb = self.null_handler
+        self.hardware.pot3_cb = self.null_handler
+        self.hardware.pot4_cb = self.null_handler
+        self.hardware.pot5_cb = self.null_handler
+        self.hardware.pot6_cb = self.null_handler
+        self.hardware.rot1_cb = self.rot1_handler
+        self.hardware.rot2_cb = self.null_handler
+        self.hardware.rot3_cb = self.null_handler
+        self.hardware.rot4_cb = self.null_handler
+        self.hardware.touchx_cb = self.null_handler
+        self.hardware.touchy_cb  = self.null_handler
 
 
     async def null_button_handler(self):
