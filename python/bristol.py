@@ -74,8 +74,7 @@ class Bristol:
         self.loop.create_task(self.screen.start_gif(self.loading))
         print("Stopping bristol")
         result = os.popen(f"startBristol -exit &")
-        while self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='bristol')[0]) or \
-            self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='bristol')[1]):
+        while self.client.get_ports(is_input=True, is_audio=True, name_pattern='bristol'):
             await asyncio.sleep(0.5)
         self.current_synth = self.available_synths[self.current_synth_index]
         result = os.popen(f"startBristol -{self.current_synth} -jack -autoconn &")
