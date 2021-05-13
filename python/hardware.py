@@ -53,17 +53,17 @@ class Hardware:
 
     def start(self):
         self.running = True
-        with concurrent.futures.ThreadPoolExecutor() as pool:
-            result = asyncio.ensure_future(self.loop.run_in_executor(
-                pool, self.check_inputs_task))
-            print('custom input thread pool', result)
-            result = asyncio.ensure_future(self.loop.run_in_executor(
-                pool, self.check_buttons_task))
-            print('custom button thread pool', result)
-        # self.loop.create_task(self.check_inputs_task())
-        # self.loop.create_task(self.check_buttons_task())
+        # with concurrent.futures.ThreadPoolExecutor() as pool:
+        #     result = asyncio.ensure_future(self.loop.run_in_executor(
+        #         pool, self.check_inputs_task))
+        #     print('custom input thread pool', result)
+        #     result = asyncio.ensure_future(self.loop.run_in_executor(
+        #         pool, self.check_buttons_task))
+        #     print('custom button thread pool', result)
+        self.loop.create_task(self.check_inputs_task())
+        self.loop.create_task(self.check_buttons_task())
 
-    def check_inputs_task(self):
+    async def check_inputs_task(self):
         previous_data = self.previous_data
         print("################ In check inputs task")
         while self.running:
@@ -72,78 +72,72 @@ class Hardware:
                 if data and data != previous_data:
                     # Pot1
                     if data[6] != previous_data[6]:
-                        print(f"################ Pot 1 : {data[6]}")
-                        fut = asyncio.run_coroutine_threadsafe(self.pot1_cb(data[6]), asyncio.new_event_loop())
-                        print(f"Result : {fut.result()}")
+                        await self.pot1_cb(data[6])
                     # Pot2
                     if data[7] != previous_data[7]:
-                        asyncio.run_coroutine_threadsafe(self.pot2_cb(data[7]), self.loop).result()
+                        await self.pot2_cb(data[7])
                     # Pot3
                     if data[8] != previous_data[8]:
-                        asyncio.run_coroutine_threadsafe(self.pot3_cb(data[8]), self.loop).result()
+                        await self.pot3_cb(data[8])
                     # Pot4
                     if data[9] != previous_data[9]:
-                        asyncio.run_coroutine_threadsafe(self.pot4_cb(data[9]), self.loop).result()
+                        await self.pot4_cb(data[9])
                     # Pot5
                     if data[10] != previous_data[10]:
-                        asyncio.run_coroutine_threadsafe(self.pot5_cb(data[10]), self.loop).result()
+                        await self.pot5_cb(data[10])
                     # Pot6
                     if data[11] != previous_data[11]:
-                        asyncio.run_coroutine_threadsafe(self.pot6_cb(data[11]), self.loop).result()
+                        await self.pot6_cb(data[11])
                     # Rot1
                     if data[2] != previous_data[2]:
-                        print(f"################ Rot 1 : {data[2]}")
                         if (data[2] == 0 and previous_data[2] == 255) or data[2] > previous_data[2]:
-                            self.loop.create_task(self.rot1_cb(True))
+                            await self.rot1_cb(True)
                         else:
-                            self.loop.create_task(self.rot1_cb(True))
+                            await self.rot1_cb(True)
                     # Rot2
                     if data[3] != previous_data[3]:
-                        asyncio.run_coroutine_threadsafe(self.rot2_cb(data[3]), self.loop).result()
+                        await self.rot2_cb(data[3])
                     # Rot3
                     if data[4] != previous_data[4]:
-                        asyncio.run_coroutine_threadsafe(self.rot3_cb(data[4]), self.loop).result()
+                        await self.rot3_cb(data[4])
                     # Rot4
                     if data[5] != previous_data[5]:
-                        asyncio.run_coroutine_threadsafe(self.rot4_cb(data[5]), self.loop).result()
+                        await self.rot4_cb(data[5])
                     # TouchX
                     if data[0] != previous_data[0]:
-                        asyncio.run_coroutine_threadsafe(self.touchx_cb(data[0]), self.loop).result()
+                        await self.touchx_cb(data[0])
                     # TouchY
                     if data[1] != previous_data[1]:
-                        asyncio.run_coroutine_threadsafe(self.touchy_cb(data[1]), self.loop).result()
+                        await self.touchy_cb(data[1])
                     # for index, value in enumerate(data):
                     #     if previous_data and value != previous_data[index]:
                     #         print(f"Data {index} : {value}")
                     previous_data = data
-                    # await self.inputs_cb(data)
-                # await asyncio.sleep(0.05)
+                await asyncio.sleep(0.05)
             except IOError:
                 print('did not respond')
-                # await asyncio.sleep(1)
+                await asyncio.sleep(1)
             except Exception as error:
                 print(f"Inputs task : {error}")
-                # await asyncio.sleep(1)
+                await asyncio.sleep(1)
 
-    def check_buttons_task(self):
+    async def check_buttons_task(self):
         print("################ In check buttons task")
         while self.running:
             try:
                 if self.button1.is_pressed:
                   print(f"Hold time : {self.button1.held_time}")
-                  # self.loop.create_task(self.b1_cb())
-                  fut = asyncio.run_coroutine_threadsafe(self.b1_cb(), asyncio.new_event_loop())
-                  print(f"Result : {fut.result()}")
+                  await self.b1_cb()
                 if self.button2.is_pressed:
                   print("Pressed")
-                  asyncio.run_coroutine_threadsafe(self.b2_cb(), self.loop).result()
+                  await self.b2_cb()
                 if self.button3.is_pressed:
                   print("Pressed")
-                  asyncio.run_coroutine_threadsafe(self.b3_cb(), self.loop).result()
+                  await self.b3_cb()
                 if self.button4.is_pressed:
                   print("Pressed")
-                  asyncio.run_coroutine_threadsafe(self.b4_cb(), self.loop).result()
-                # await asyncio.sleep(0.05)
+                  await self.b4_cb()
+                await asyncio.sleep(0.05)
             except Exception as error:
                 print(f"Buttons task : {error}")
-                # await asyncio.sleep(1)
+                await asyncio.sleep(1)
