@@ -32,9 +32,9 @@ class Main:
         self.pressed = False
 
         self.hardware = Hardware(self.b1_handler,
-                                 self.null_handler,
-                                 self.null_handler,
-                                 self.null_handler,
+                                 self.null_button_handler,
+                                 self.null_button_handler,
+                                 self.null_button_handler,
                                  (self.null_handler, #self.pot1_handler,
                                   self.null_handler, #self.pot2_handler,
                                   self.null_handler, #self.pot3_handler,
@@ -58,6 +58,9 @@ class Main:
         else:
             self.pressed = True
 
+
+    async def null_button_handler(self):
+        pass
 
     async def null_handler(self, data):
         pass
