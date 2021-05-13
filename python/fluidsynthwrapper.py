@@ -7,7 +7,7 @@ import fluidsynth
 class FluidSynthWrapper:
     def __init__(self, hardware, midi, screen, loop):
         self.hardware = hardware
-        self.hardware.b1_cb = self.b1_handler
+        # self.hardware.b1_cb = self.b1_handler
         self.hardware.b2_cb = self.null_handler
         self.hardware.b3_cb = self.null_handler
         self.hardware.b4_cb = self.null_handler
@@ -45,7 +45,7 @@ class FluidSynthWrapper:
         self.fs.setting('midi.autoconnect', 1)
         self.sfid = None
 
-    async def b1_handler(self):
+    def b1_handler(self):
         self.reload = True
 
     async def null_handler(self, data):
