@@ -57,7 +57,7 @@ install_all_deps() {
   sudo apt upgrade -y
   sudo apt install -y python3-mido python3-smbus python3-gpiozero a2jmidid
 
-  python3 -m pip install setuptools JACK-Client adafruit-circuitpython-ssd1306 python-rtmidi
+  python3 -m pip install setuptools JACK-Client adafruit-circuitpython-ssd1306 python-rtmidi pyFluidSynth
 }
 
 install_all_deps
