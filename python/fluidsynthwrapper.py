@@ -68,8 +68,10 @@ class FluidSynthWrapper:
                 # result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
                 self.fs.start()
+                print("############# FS started")
                 sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 self.fs.program_select(0, self.sfid, 0, 0)
+                print("############# FS programm select")
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
                     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
                     try:

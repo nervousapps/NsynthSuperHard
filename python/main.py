@@ -88,6 +88,7 @@ class Main:
                                                           midi=self.midi,
                                                           screen=self.screen,
                                                           loop=self.loop)
+                        print("############# FS created")
                         await self.current_synth.start()
                         self.menu_line = ["", self.available_synths[self.synth_index]["name"], ""]
                         self.screen.draw_menu(self.menu_line)
