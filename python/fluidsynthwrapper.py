@@ -110,18 +110,20 @@ class FluidSynthWrapper:
                     except Exception as error:
                         print(f"################# {error}")
                     await asyncio.sleep(0.5)
-                print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
-                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
-                    print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
+                print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]))
+                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]):
+                    print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]))
                     try:
                         self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                            self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
+                                            self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
                     except Exception as error:
                         print(f"################# {error}")
                         if 'already exists' in str(error):
                             break
                     await asyncio.sleep(0.5)
                 print("############# FS running")
+                sfont_id, bank, program, name = self.fs.channel_info(0)
+                self.screen.draw_text_box(f"Preset \n{name.decode()}")
                 while self.running:
                     # self.fs.noteon(0, 60, 30)
                     # self.fs.noteon(0, 67, 30)
