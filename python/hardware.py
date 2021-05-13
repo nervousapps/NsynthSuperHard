@@ -54,11 +54,11 @@ class Hardware:
     def start(self):
         self.running = True
         with concurrent.futures.ThreadPoolExecutor() as pool:
-            result = await loop.run_in_executor(
-                pool, self.check_inputs_task)
+            result = self.loop.create_task(self.loop.run_in_executor(
+                pool, self.check_inputs_task))
             print('custom input thread pool', result)
-            result = await loop.run_in_executor(
-                pool, self.check_buttons_task)
+            result = self.loop.create_task(self.loop.run_in_executor(
+                pool, self.check_buttons_task))
             print('custom button thread pool', result)
         # self.loop.create_task(self.check_inputs_task())
         # self.loop.create_task(self.check_buttons_task())
