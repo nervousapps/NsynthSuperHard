@@ -69,7 +69,6 @@ class Hardware:
         while self.running:
             try:
                 data = self.bus.read_i2c_block_data(self.address, 0, 16)
-                print(f"################ Data : {data}")
                 if data and data != previous_data:
                     # Pot1
                     if data[6] != previous_data[6]:
