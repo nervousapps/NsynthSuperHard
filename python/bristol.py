@@ -96,7 +96,7 @@ class Bristol:
         self.hardware.start()
         print("Ready to go !")
 
-    async def b1_handler(self):
+    async def b_handler(self):
         self.current_synth_index = self.synth_index
         print(f"Button handler : {self.current_synth_index}")
         self.reload = True
