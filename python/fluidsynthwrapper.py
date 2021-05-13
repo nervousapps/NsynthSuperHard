@@ -40,7 +40,7 @@ class FluidSynthWrapper:
         self.reload = False
         self.running = False
         self.loading = self.screen.get_loading()
-        self.fs = fluidsynth.Synth(gain=2, samplerate=48000, channels=256, kwargs={("audio.jack.autoconnect", 1), ("midi.autoconnect", 1)})
+        self.fs = fluidsynth.Synth(gain=2, samplerate=48000, channels=256, kwargs={("audio.jack.autoconnect", bytes(1)), ("midi.autoconnect", bytes(1))})
         self.sfid = None
 
     async def b1_handler(self):
