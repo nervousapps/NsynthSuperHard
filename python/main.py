@@ -18,7 +18,7 @@ class Main:
         # Get the list of available synths
         self.available_synths = [
             {"name": "BRISTOL", "class": Bristol},
-            {"name": "FluidSynth", "class": FluidSynth}
+            {"name": "FluidSynth", "class": FluidSynthWrapper}
         ]
 
         self.reload = False
