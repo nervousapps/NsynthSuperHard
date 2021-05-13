@@ -3,7 +3,8 @@ import asyncio
 import jack
 
 class Bristol:
-    def __init__(self, hardware, midi, screen, loop):
+    def __init__(self, hardware, midi, screen, loop, jack_client):
+        self.client = jack_client
         self.hardware = hardware
         self.hardware.b2_cb = self.b_handler
         self.hardware.rot2_cb = self.rot_handler
@@ -57,9 +58,6 @@ class Bristol:
             "aks",
             "mixer"
         ]
-
-        # Init jack client
-        self.client = jack.Client('BristolClient')
 
         self.current_synth_index = 0
         self.synth_index = self.current_synth_index
@@ -122,29 +120,24 @@ class Bristol:
         self.running = True
         self.loop.create_task(self.screen.start_gif(self.loading))
         try:
-            with self.client:
-                await asyncio.sleep(5)
-                result = os.popen(f"a2jmidid -e")
-                self.screen.stop_gif()
+            try:
+                await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+            except asyncio.TimeoutError:
+                print('timeout!')
+                self.screen.draw_text_box(f"{self.current_synth} is not available ...")
                 await asyncio.sleep(2)
-                try:
-                    await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
-                except asyncio.TimeoutError:
-                    print('timeout!')
-                    self.screen.draw_text_box(f"{self.current_synth} is not available ...")
-                    await asyncio.sleep(2)
-                while self.running:
-                    if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
-                        try:
-                            await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
-                        except asyncio.TimeoutError:
-                            print('timeout!')
-                            self.screen.draw_text_box(f"{self.current_synth} is not available ...")
-                            self.current_synth == self.available_synths[self.current_synth_index]
-                            await asyncio.sleep(2)
-                        self.reload = False
-                    await asyncio.sleep(0.1)
-                result = os.popen("startBristol -exit &")
+            while self.running:
+                if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
+                    try:
+                        await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                    except asyncio.TimeoutError:
+                        print('timeout!')
+                        self.screen.draw_text_box(f"{self.current_synth} is not available ...")
+                        self.current_synth == self.available_synths[self.current_synth_index]
+                        await asyncio.sleep(2)
+                    self.reload = False
+                await asyncio.sleep(0.1)
+            result = os.popen("startBristol -exit &")
         except KeyboardInterrupt:
             self.midi.stop()
             self.hardware.stop()

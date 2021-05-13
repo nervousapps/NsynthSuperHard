@@ -94,31 +94,37 @@ class Main:
         try:
             self.screen.draw_text_box("NsynthSuperHard")
             await asyncio.sleep(2)
-            self.screen.draw_menu(self.menu_line)
-            self.hardware.start()
+            self.loop.create_task(self.screen.start_gif(self.loading))
 
             # self.loop.create_task(self.midi.midi_over_uart_task())
-
-            while True:
-                try:
-                    if self.pressed:
-                        self.pressed = False
-                        self.hardware.stop()
-                        self.current_synth = self.available_synths[self.synth_index]["class"](
-                                                          hardware=self.hardware,
-                                                          midi=self.midi,
-                                                          screen=self.screen,
-                                                          loop=self.loop)
-                        print("############# Synth created")
-                        await self.current_synth.start()
-                        self.screen.draw_menu(self.menu_line)
-                        if not self.hardware.running:
-                            self.hardware.start()
-                except Exception as error:
-                    print(f"Main loop exception :{error}")
-                    self.screen.draw_text_box('Main loop exception !')
-                    await asyncio.sleep(2)
-                await asyncio.sleep(0.1)
+            with self.client:
+                await asyncio.sleep(5)
+                result = os.popen(f"a2jmidid -e")
+                self.screen.stop_gif()
+                await asyncio.sleep(2)
+                self.screen.draw_menu(self.menu_line)
+                self.hardware.start()
+                while True:
+                    try:
+                        if self.pressed:
+                            self.pressed = False
+                            self.hardware.stop()
+                            self.current_synth = self.available_synths[self.synth_index]["class"](
+                                                              hardware=self.hardware,
+                                                              midi=self.midi,
+                                                              screen=self.screen,
+                                                              loop=self.loop
+                                                              jack_client=self.client)
+                            print("############# Synth created")
+                            await self.current_synth.start()
+                            self.screen.draw_menu(self.menu_line)
+                            if not self.hardware.running:
+                                self.hardware.start()
+                    except Exception as error:
+                        print(f"Main loop exception :{error}")
+                        self.screen.draw_text_box('Main loop exception !')
+                        await asyncio.sleep(2)
+                    await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
             self.hardware.stop()
