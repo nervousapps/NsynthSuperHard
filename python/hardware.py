@@ -16,22 +16,22 @@ class Hardware:
         """
         self.running = True
         self.pressed = False
-        # self.button1 = Button(5, bounce_time=BOUNCE)
-        # self.button2 = Button(6, bounce_time=BOUNCE)
-        # self.button3 = Button(13, bounce_time=BOUNCE)
-        # self.button4 = Button(26, bounce_time=BOUNCE)
-        # self.b1_cb = b1_cb
-        # self.b2_cb = b2_cb
-        # self.b3_cb = b3_cb
-        # self.b4_cb = b4_cb
-        button_sounds = {
-            Button(5, bounce_time=BOUNCE): b1_cb,
-            Button(6, bounce_time=BOUNCE): b2_cb,
-            Button(13, bounce_time=BOUNCE): b3_cb,
-            Button(26, bounce_time=BOUNCE): b4_cb
-        }
-        for button, cb in button_sounds.items():
-            button.when_pressed = cb
+        self.button1 = Button(5, bounce_time=BOUNCE)
+        self.button2 = Button(6, bounce_time=BOUNCE)
+        self.button3 = Button(13, bounce_time=BOUNCE)
+        self.button4 = Button(26, bounce_time=BOUNCE)
+        self.b1_cb = b1_cb
+        self.b2_cb = b2_cb
+        self.b3_cb = b3_cb
+        self.b4_cb = b4_cb
+        # button_sounds = {
+        #     Button(5, bounce_time=BOUNCE): b1_cb,
+        #     Button(6, bounce_time=BOUNCE): b2_cb,
+        #     Button(13, bounce_time=BOUNCE): b3_cb,
+        #     Button(26, bounce_time=BOUNCE): b4_cb
+        # }
+        # for button, cb in button_sounds.items():
+        #     button.when_pressed = cb
 
 
 
@@ -125,21 +125,21 @@ class Hardware:
 
     async def check_buttons_task(self):
         print("################ In check buttons task")
-        # while self.running:
-        #     try:
-        #         if self.button1.is_pressed:
-        #           print("Pressed")
-        #           await self.b1_cb()
-        #         if self.button2.is_pressed:
-        #           print("Pressed")
-        #           await self.b2_cb()
-        #         if self.button3.is_pressed:
-        #           print("Pressed")
-        #           await self.b3_cb()
-        #         if self.button4.is_pressed:
-        #           print("Pressed")
-        #           await self.b4_cb()
-        #         await asyncio.sleep(0.05)
-        #     except Exception as error:
-        #         print(f"Buttons task : {error}")
-        #         await asyncio.sleep(1)
+        while self.running:
+            try:
+                if self.button1.is_pressed:
+                  print(f"Pressed : {self.button1.held_time()}")
+                  await self.b1_cb()
+                if self.button2.is_pressed:
+                  print("Pressed")
+                  await self.b2_cb()
+                if self.button3.is_pressed:
+                  print("Pressed")
+                  await self.b3_cb()
+                if self.button4.is_pressed:
+                  print("Pressed")
+                  await self.b4_cb()
+                await asyncio.sleep(0.05)
+            except Exception as error:
+                print(f"Buttons task : {error}")
+                await asyncio.sleep(1)

@@ -45,7 +45,7 @@ class FluidSynthWrapper:
         self.fs.setting('midi.autoconnect', 1)
         self.sfid = None
 
-    def b1_handler(self):
+    async def b1_handler(self):
         self.reload = True
 
     async def null_handler(self, data):
