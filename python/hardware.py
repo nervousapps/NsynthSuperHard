@@ -73,7 +73,8 @@ class Hardware:
                     # Pot1
                     if data[6] != previous_data[6]:
                         print(f"################ Pot 1 : {data[6]}")
-                        self.loop.create_task(self.pot1_cb(data[6]))
+                        fut = asyncio.run_coroutine_threadsafe(self.pot1_cb(data[6]), asyncio.new_event_loop())
+                        print(f"Result : {fut.result()}")
                     # Pot2
                     if data[7] != previous_data[7]:
                         asyncio.run_coroutine_threadsafe(self.pot2_cb(data[7]), self.loop).result()
