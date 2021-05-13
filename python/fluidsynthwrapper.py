@@ -70,6 +70,7 @@ class FluidSynthWrapper:
                 self.fs.start()
                 print("############# FS started")
                 sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
+                print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
                 print("############# FS programm select")
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
@@ -78,8 +79,9 @@ class FluidSynthWrapper:
                         self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
                                             self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
                     except Exception as error:
-                        print(error)
+                        print(f"################# {error}")
                     await asyncio.sleep(0.5)
+                print("############# FS running")
                 while self.running:
                     await asyncio.sleep(1)
                 self.fs.delete()
