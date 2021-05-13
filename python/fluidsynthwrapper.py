@@ -92,10 +92,10 @@ class FluidSynthWrapper:
         self.loop.create_task(self.screen.start_gif(self.loading))
         try:
             with self.client:
-                await asyncio.sleep(5)
+                await asyncio.sleep(1)
                 result = os.popen(f"a2jmidid -e")
                 self.screen.stop_gif()
-                await asyncio.sleep(2)
+                await asyncio.sleep(1)
                 # result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
                 self.fs.start(driver="jack", midi_driver="jack")
