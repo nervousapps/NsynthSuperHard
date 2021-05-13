@@ -40,9 +40,9 @@ class FluidSynthWrapper:
         self.reload = False
         self.running = False
         self.loading = self.screen.get_loading()
-        self.fs = fluidsynth.Synth(gain=2, samplerate=48000, channels=256) #, kwargs={("audio.jack.autoconnect", bytes(1)), ("midi.autoconnect", bytes(1))})
-        # self.fs.setting('audio.jack.autoconnect', 1)
-        # print(f"########### {self.fs.get_setting('audio.jack.autoconnect')}")
+        self.fs = fluidsynth.Synth(gain=2, samplerate=48000) #, kwargs={("audio.jack.autoconnect", bytes(1)), ("midi.autoconnect", bytes(1))})
+        self.fs.setting('audio.jack.autoconnect', 1)
+        print(f"########### {self.fs.get_setting('audio.jack.autoconnect')}")
         # self.fs.setting('midi.autoconnect', 1)
         # print(f"########### {self.fs.get_setting('midi.autoconnect')}")
         self.sfid = None
@@ -56,6 +56,8 @@ class FluidSynthWrapper:
     async def rot1_handler(self, data):
         self.preset_num += 1
         self.fs.program_select(0, self.sfid, 0, self.preset_num)
+        sfont_id, bank, program, name = self.fs.channel_info(0)
+        self.screen.draw_text_box(f"Preset : {name}")
 
     async def pot1_handler(self, data):
         self.screen.draw_text_box(f"Volume : {int(data/2)}")
@@ -75,7 +77,7 @@ class FluidSynthWrapper:
                 await asyncio.sleep(2)
                 # result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
-                self.fs.start(driver="jack", midi_driver="jack")
+                self.fs.start()#driver="jack", midi_driver="jack")
                 print("############# FS started")
                 self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 print("############# FS load font")
@@ -84,13 +86,13 @@ class FluidSynthWrapper:
                 while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
                     print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
-                    try:
-                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0],
-                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0])
-                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1],
-                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1])
-                    except Exception as error:
-                        print(f"################# {error}")
+                    # try:
+                    #     self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0],
+                    #                         self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0])
+                    #     self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1],
+                    #                         self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1])
+                    # except Exception as error:
+                    #     print(f"################# {error}")
                     await asyncio.sleep(0.5)
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0]):
                     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0]))

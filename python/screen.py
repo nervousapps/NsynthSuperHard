@@ -47,8 +47,9 @@ class Screen:
         draw = ImageDraw.Draw(image)
         return image, draw
 
-    def draw_text_box(self, text):
-        self.clear()
+    def draw_text_box(self, text, clear=False):
+        if clear:
+            self.clear()
         image, draw = self.create_blank_image()
 
         # Draw a white background
