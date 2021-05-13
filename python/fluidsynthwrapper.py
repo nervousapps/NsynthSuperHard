@@ -54,8 +54,8 @@ class FluidSynthWrapper:
         self.fs.program_select(0, self.sfid, 0, self.preset_num)
 
     async def pot1_handler(self, data):
-        self.screen.draw_text_box(f"Volume : {data/2}")
-        self.fs.cc(0, 7, data/2)
+        self.screen.draw_text_box(f"Volume : {int(data/2)}")
+        self.fs.cc(0, 7, int(data/2))
 
     def stop(self):
         self.running = False
