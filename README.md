@@ -1,6 +1,12 @@
 # NsynthSuperHard
 Use the OpenNsynthSuper hardware to run other synths.
 
+Jack used for audio and midi driver.
+
+# Available synths
+  - FluidSynth (https://www.fluidsynth.org/)
+  - Bristol (http://bristol.sourceforge.net/)
+
 # Prerequisites
 The OpenNsynthSuper firmware need to be already flashed in the microcontroller.
 
@@ -15,7 +21,7 @@ The Raspberry need access to internet, activate the wlan or plug in an ethernet 
   See https://www.raspberrypi.org/software/
   - Boot the Raspberry with the SD card previously prepared inserted
   - Clone this repo
-  - Run bash setup_install_all.sh
+  - Run : bash setup_install_all.sh
 
 # Links
 https://www.raspberrypi-spy.co.uk/2018/04/i2c-oled-display-module-with-raspberry-pi/

@@ -60,7 +60,18 @@ install_all_deps() {
   python3 -m pip install setuptools JACK-Client adafruit-circuitpython-ssd1306 python-rtmidi pyFluidSynth
 }
 
+setup_service() {
+  sudo cp nsynthsuperhard.service /lib/systemd/system/nsynthsuperhard.service
+  sudo chmod 644 /lib/systemd/system/nsynthsuperhard.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable nsynthsuperhard.service
+}
+
 install_all_deps
 setup_i2c
 setup_audio
 setup_serial
+
+setup_service
+
+sudo reboot
