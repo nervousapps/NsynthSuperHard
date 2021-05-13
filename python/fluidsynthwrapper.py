@@ -97,6 +97,7 @@ class FluidSynthWrapper:
                 print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
                 self.fs.router_begin("note")
+                self.fs.router_chan(self, 0, 16, 0.0, 0):
                 print("############# FS programm select")
                 while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
@@ -122,15 +123,15 @@ class FluidSynthWrapper:
                     await asyncio.sleep(0.5)
                 print("############# FS running")
                 while self.running:
-                    self.fs.noteon(0, 60, 30)
-                    self.fs.noteon(0, 67, 30)
-                    self.fs.noteon(0, 76, 30)
+                    # self.fs.noteon(0, 60, 30)
+                    # self.fs.noteon(0, 67, 30)
+                    # self.fs.noteon(0, 76, 30)
 
                     await asyncio.sleep(1)
 
-                    self.fs.noteoff(0, 60)
-                    self.fs.noteoff(0, 67)
-                    self.fs.noteoff(0, 76)
+                    # self.fs.noteoff(0, 60)
+                    # self.fs.noteoff(0, 67)
+                    # self.fs.noteoff(0, 76)
 
                     await asyncio.sleep(1)
                 self.fs.delete()
