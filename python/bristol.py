@@ -6,9 +6,9 @@ class Bristol:
     def __init__(self, hardware, midi, screen, loop):
         self.hardware = hardware
         self.hardware.b1_cb = self.b1_handler
-        self.hardware.b2_cb = self.null_handler
-        self.hardware.b3_cb = self.null_handler
-        self.hardware.b4_cb = self.null_handler
+        self.hardware.b2_cb = self.null_button_handler
+        self.hardware.b3_cb = self.null_button_handler
+        self.hardware.b4_cb = self.null_button_handler
 
 
         self.hardware.pot1_cb = self.null_handler
@@ -117,6 +117,9 @@ class Bristol:
         self.current_synth_index = self.synth_index
         print(f"Button handler : {self.current_synth_index}")
         self.reload = True
+
+    def null_button_handler(self):
+        pass
 
     async def null_handler(self, data):
         pass

@@ -59,7 +59,7 @@ class Main:
             self.pressed = True
 
 
-    async def null_button_handler(self):
+    def null_button_handler(self):
         pass
 
     async def null_handler(self, data):
