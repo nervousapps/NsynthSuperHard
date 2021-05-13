@@ -74,8 +74,7 @@ class Hardware:
                     # Pot1
                     if data[6] != previous_data[6]:
                         print(f"################ Pot 1 : {data[6]}")
-                        future = asyncio.run_coroutine_threadsafe(self.pot1_cb(data[6]), self.loop)
-                        print(f"################ Result : {future.result()}")
+                        self.loop.create_task(self.pot1_cb(data[6]))
                     # Pot2
                     if data[7] != previous_data[7]:
                         asyncio.run_coroutine_threadsafe(self.pot2_cb(data[7]), self.loop).result()
@@ -118,7 +117,6 @@ class Hardware:
                     previous_data = data
                     # await self.inputs_cb(data)
                 # await asyncio.sleep(0.05)
-                time.sleep(0.1)
             except IOError:
                 print('did not respond')
                 # await asyncio.sleep(1)
@@ -132,8 +130,7 @@ class Hardware:
             try:
                 if self.button1.is_held:
                   print(f"Hold time : {self.button1.held_time}")
-                  future = asyncio.run_coroutine_threadsafe(self.b1_cb(), self.loop)
-                  print(f"################ Result : {future.result()}")
+                  self.loop.create_task(self.b1_cb())
                 if self.button2.is_pressed:
                   print("Pressed")
                   asyncio.run_coroutine_threadsafe(self.b2_cb(), self.loop).result()
