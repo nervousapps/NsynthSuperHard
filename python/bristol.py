@@ -137,7 +137,10 @@ class Bristol:
                         await asyncio.sleep(2)
                     self.reload = False
                 await asyncio.sleep(0.1)
+            self.client.disconnect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                                self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
             result = os.popen("startBristol -exit &")
+            await asyncio.sleep(2)
         except KeyboardInterrupt:
             self.midi.stop()
             self.hardware.stop()
