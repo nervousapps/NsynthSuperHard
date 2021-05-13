@@ -121,7 +121,7 @@ class Bristol:
         self.loop.create_task(self.screen.start_gif(self.loading))
         try:
             try:
-                await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                await asyncio.wait_for(self.start_bristol_emu(), timeout=60.0)
             except asyncio.TimeoutError:
                 print('timeout!')
                 self.screen.draw_text_box(f"{self.current_synth} is not available ...")
