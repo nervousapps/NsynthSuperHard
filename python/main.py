@@ -124,9 +124,14 @@ class Main:
                             if not self.hardware.running:
                                 self.hardware.start()
                     except Exception as error:
+                        self.screen.stop_gif()
                         print(f"Main loop exception :{error}")
                         self.screen.draw_text_box('Main loop exception !')
                         await asyncio.sleep(2)
+                        if self.current_synth:
+                            self.current_synth.stop()
+                            self.current_synth = None
+                        self.pressed = False
                     await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
