@@ -85,10 +85,10 @@ class FluidSynthWrapper:
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
                     print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
                     try:
-                        self.client.connect(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0],
-                                            self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0])
-                        self.client.connect(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1],
-                                            self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1])
+                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0],
+                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0])
+                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1],
+                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1])
                     except Exception as error:
                         print(f"################# {error}")
                     await asyncio.sleep(0.5)
