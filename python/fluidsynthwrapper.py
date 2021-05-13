@@ -94,7 +94,6 @@ class FluidSynthWrapper:
             with self.client:
                 await asyncio.sleep(1)
                 result = os.popen(f"a2jmidid -e")
-                self.screen.stop_gif()
                 await asyncio.sleep(1)
                 self.screen.draw_text_box(f"FluidSynth")
                 self.fs.start(driver="jack", midi_driver="jack")
@@ -103,8 +102,16 @@ class FluidSynthWrapper:
                 print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
                 print("############# FS programm select")
+                while not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0]) or \
+                    not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1]):
+                    await asyncio.sleep(0.5)
+                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]):
+                    self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                                        self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
+                    await asyncio.sleep(0.5)
                 print("############# FS running")
                 sfont_id, bank, program, name = self.fs.channel_info(0)
+                self.screen.stop_gif()
                 self.screen.draw_text_box(f"Preset \n{name.decode()}")
                 while self.running:
                     await asyncio.sleep(1)
