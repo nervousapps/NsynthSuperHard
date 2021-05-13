@@ -22,7 +22,7 @@ class Hardware:
         self.button2 = Button(6, bounce_time=BOUNCE)
         self.button3 = Button(13, bounce_time=BOUNCE)
         self.button4 = Button(26, bounce_time=BOUNCE)
-        self.b1_cb, self.b1_lp_cb = b1_cb
+        self.b1_cb = b1_cb
         self.b2_cb = b2_cb
         self.b3_cb = b3_cb
         self.b4_cb = b4_cb
@@ -129,11 +129,7 @@ class Hardware:
                 if self.button1.is_pressed:
                   print(f"Held time : {self.button1.held_time}")
                   print(f"Last held time : {last_held + 5.0}")
-                  if self.button1.held_time and self.button1.held_time > last_held + 5.0:
-                      last_held = self.button1.held_time
-                      await self.b1_lp_cb()
-                  else:
-                      await self.b1_cb()
+                  await self.b1_cb()
                 if self.button2.is_pressed:
                   print("Pressed")
                   await self.b2_cb()
