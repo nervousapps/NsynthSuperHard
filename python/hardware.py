@@ -93,7 +93,7 @@ class Hardware:
                         if (data[2] == 0 and previous_data[2] == 255) or data[2] > previous_data[2]:
                             await self.rot1_cb(True)
                         else:
-                            await self.rot1_cb(True)
+                            await self.rot1_cb(False)
                     # Rot2
                     if data[3] != previous_data[3]:
                         await self.rot2_cb(data[3])
