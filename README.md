@@ -10,7 +10,7 @@ Just follow the instructions 3 and 4, get the 16GB image to go faster.
 If the OpenNsynthSuper was up and running then the firmware is already loaded, no need to install it.
 
 # Setup
-The Raspberry need access to network.
+The Raspberry need access to internet, activate the wlan or plug in an ethernet cable.
   - Prepare a SD card with Raspbian (Desktop or Lite, lite recommended) (don't forget to add ssh named file in boot partition in order to enable ssh at boot).
   See https://www.raspberrypi.org/software/
   - Boot the Raspberry with the SD card previously prepared inserted

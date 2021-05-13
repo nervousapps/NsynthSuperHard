@@ -95,6 +95,7 @@ class Main:
                     print(f"Main loop exception :{error}")
                     self.screen.draw_text_box('Main loop exception !')
                     await asyncio.sleep(2)
+                self.pressed = False
                 await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
