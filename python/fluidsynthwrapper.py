@@ -40,11 +40,11 @@ class FluidSynthWrapper:
         self.reload = False
         self.running = False
         self.loading = self.screen.get_loading()
-        self.fs = fluidsynth.Synth(gain=2, samplerate=48000) #, kwargs={("audio.jack.autoconnect", bytes(1)), ("midi.autoconnect", bytes(1))})
-        self.fs.setting('audio.jack.autoconnect', 1)
+        self.fs = fluidsynth.Synth(gain=2, samplerate=48000, kwargs={("audio.jack.autoconnect", 1), ("midi.autoconnect", 1)})
+        # self.fs.setting('audio.jack.autoconnect', 1)
         print(f"########### {self.fs.get_setting('audio.jack.autoconnect')}")
         # self.fs.setting('midi.autoconnect', 1)
-        # print(f"########### {self.fs.get_setting('midi.autoconnect')}")
+        print(f"########### {self.fs.get_setting('midi.autoconnect')}")
         self.sfid = None
 
     async def b1_handler(self):
@@ -57,7 +57,7 @@ class FluidSynthWrapper:
         self.preset_num += 1
         self.fs.program_select(0, self.sfid, 0, self.preset_num)
         sfont_id, bank, program, name = self.fs.channel_info(0)
-        self.screen.draw_text_box(f"Preset : {name}")
+        self.screen.draw_text_box(f"Preset \n{name.decode()}")
 
     async def pot1_handler(self, data):
         self.screen.draw_text_box(f"Volume : {int(data/2)}")
@@ -96,11 +96,11 @@ class FluidSynthWrapper:
                     await asyncio.sleep(0.5)
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0]):
                     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0]))
-                    try:
-                        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                            self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
-                    except Exception as error:
-                        print(f"################# {error}")
+                    # try:
+                    #     self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                    #                         self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
+                    # except Exception as error:
+                    #     print(f"################# {error}")
                     await asyncio.sleep(0.5)
                 print("############# FS running")
                 while self.running:
