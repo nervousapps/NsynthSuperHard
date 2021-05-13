@@ -113,11 +113,11 @@ class Main:
                         self.screen.draw_menu(self.menu_line)
                         if not self.hardware.running:
                             self.hardware.start()
+                        self.pressed = False
                 except Exception as error:
                     print(f"Main loop exception :{error}")
                     self.screen.draw_text_box('Main loop exception !')
                     await asyncio.sleep(2)
-                self.pressed = False
                 await asyncio.sleep(0.1)
         except KeyboardInterrupt:
             self.midi.stop()
