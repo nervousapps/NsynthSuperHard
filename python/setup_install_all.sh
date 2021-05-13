@@ -49,9 +49,10 @@ setup_serial() {
 }
 
 install_all_deps() {
+  sudo add-apt-repository ppa:ichthyo/music
   sudo apt-get update
   sudo apt-get upgrade -y
-  sudo apt-get -y bristol
+  sudo apt-get -y bristol yoshimi
 
   sudo apt update
   sudo apt upgrade -y
