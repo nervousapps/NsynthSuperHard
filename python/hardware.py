@@ -31,7 +31,7 @@ class Hardware:
             Button(26, bounce_time=BOUNCE): b4_cb
         }
         for button, cb in button_sounds.items():
-            button.when_pressed = cb()
+            button.when_pressed = cb
 
 
 
