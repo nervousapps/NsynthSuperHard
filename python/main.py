@@ -113,7 +113,7 @@ class Main:
                                                               hardware=self.hardware,
                                                               midi=self.midi,
                                                               screen=self.screen,
-                                                              loop=self.loop
+                                                              loop=self.loop,
                                                               jack_client=self.client)
                             print("############# Synth created")
                             await self.current_synth.start()
