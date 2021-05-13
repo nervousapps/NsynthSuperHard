@@ -72,43 +72,43 @@ class Hardware:
                 if data and data != previous_data:
                     # Pot1
                     if data[6] != previous_data[6]:
-                        self.loop.call_soon_threadsafe(self.pot1_cb(data[6]))
+                        asyncio.run_coroutine_threadsafe(self.pot1_cb(data[6]), self.loop)
                     # Pot2
                     if data[7] != previous_data[7]:
-                        self.loop.call_soon_threadsafe(self.pot2_cb(data[7]))
+                        asyncio.run_coroutine_threadsafe(self.pot2_cb(data[7]), self.loop)
                     # Pot3
                     if data[8] != previous_data[8]:
-                        self.loop.call_soon_threadsafe(self.pot3_cb(data[8]))
+                        asyncio.run_coroutine_threadsafe(self.pot3_cb(data[8]), self.loop)
                     # Pot4
                     if data[9] != previous_data[9]:
-                        self.loop.call_soon_threadsafe(self.pot4_cb(data[9]))
+                        asyncio.run_coroutine_threadsafe(self.pot4_cb(data[9]), self.loop)
                     # Pot5
                     if data[10] != previous_data[10]:
-                        self.loop.call_soon_threadsafe(self.pot5_cb(data[10]))
+                        asyncio.run_coroutine_threadsafe(self.pot5_cb(data[10]), self.loop)
                     # Pot6
                     if data[11] != previous_data[11]:
-                        self.loop.call_soon_threadsafe(self.pot6_cb(data[11]))
+                        asyncio.run_coroutine_threadsafe(self.pot6_cb(data[11]), self.loop)
                     # Rot1
                     if data[2] != previous_data[2]:
                         if (data[2] == 0 and previous_data[2] == 255) or data[2] > previous_data[2]:
-                            self.loop.call_soon_threadsafe(self.rot1_cb(True))
+                            asyncio.run_coroutine_threadsafe(self.rot1_cb(True), self.loop)
                         else:
-                            self.loop.call_soon_threadsafe(self.rot1_cb(False))
+                            asyncio.run_coroutine_threadsafe(self.rot1_cb(False), self.loop)
                     # Rot2
                     if data[3] != previous_data[3]:
-                        self.loop.call_soon_threadsafe(self.rot2_cb(data[3]))
+                        asyncio.run_coroutine_threadsafe(self.rot2_cb(data[3]), self.loop)
                     # Rot3
                     if data[4] != previous_data[4]:
-                        self.loop.call_soon_threadsafe(self.rot3_cb(data[4]))
+                        asyncio.run_coroutine_threadsafe(self.rot3_cb(data[4]), self.loop)
                     # Rot4
                     if data[5] != previous_data[5]:
-                        self.loop.call_soon_threadsafe(self.rot4_cb(data[5]))
+                        asyncio.run_coroutine_threadsafe(self.rot4_cb(data[5]), self.loop)
                     # TouchX
                     if data[0] != previous_data[0]:
-                        self.loop.call_soon_threadsafe(self.touchx_cb(data[0]))
+                        asyncio.run_coroutine_threadsafe(self.touchx_cb(data[0]), self.loop)
                     # TouchY
                     if data[1] != previous_data[1]:
-                        self.loop.call_soon_threadsafe(self.touchy_cb(data[1]))
+                        asyncio.run_coroutine_threadsafe(self.touchy_cb(data[1]), self.loop)
                     # for index, value in enumerate(data):
                     #     if previous_data and value != previous_data[index]:
                     #         print(f"Data {index} : {value}")
@@ -127,18 +127,18 @@ class Hardware:
         while self.running:
             try:
                 if self.button1.is_pressed:
-                  if self.button1.is_hold:
+                  if self.button1.is_held:
                       print(f"Hold time : {self.button1.hold_time}")
-                  self.loop.call_soon_threadsafe(self.b1_cb())
+                  asyncio.run_coroutine_threadsafe(self.b1_cb(), self.loop)
                 if self.button2.is_pressed:
                   print("Pressed")
-                  self.loop.call_soon_threadsafe(self.b2_cb())
+                  asyncio.run_coroutine_threadsafe(self.b2_cb(), self.loop)
                 if self.button3.is_pressed:
                   print("Pressed")
-                  self.loop.call_soon_threadsafe(self.b3_cb())
+                  asyncio.run_coroutine_threadsafe(self.b3_cb(), self.loop)
                 if self.button4.is_pressed:
                   print("Pressed")
-                  self.loop.call_soon_threadsafe(self.b4_cb())
+                  asyncio.run_coroutine_threadsafe(self.b4_cb(), self.loop)
                 # await asyncio.sleep(0.05)
             except Exception as error:
                 print(f"Buttons task : {error}")
