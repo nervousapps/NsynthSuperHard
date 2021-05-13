@@ -91,10 +91,11 @@ class Hardware:
                         asyncio.run_coroutine_threadsafe(self.pot6_cb(data[11]), self.loop).result()
                     # Rot1
                     if data[2] != previous_data[2]:
+                        print(f"################ Rot 1 : {data[2]}")
                         if (data[2] == 0 and previous_data[2] == 255) or data[2] > previous_data[2]:
-                            asyncio.run_coroutine_threadsafe(self.rot1_cb(True), self.loop).result()
+                            self.loop.create_task(self.rot1_cb(True))
                         else:
-                            asyncio.run_coroutine_threadsafe(self.rot1_cb(False), self.loop).result()
+                            self.loop.create_task(self.rot1_cb(True))
                     # Rot2
                     if data[3] != previous_data[3]:
                         asyncio.run_coroutine_threadsafe(self.rot2_cb(data[3]), self.loop).result()
@@ -127,7 +128,7 @@ class Hardware:
         print("################ In check buttons task")
         while self.running:
             try:
-                if self.button1.is_held:
+                if self.button1.is_pressed:
                   print(f"Hold time : {self.button1.held_time}")
                   self.loop.create_task(self.b1_cb())
                 if self.button2.is_pressed:
