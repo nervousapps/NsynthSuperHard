@@ -65,7 +65,7 @@ class Main:
             self.current_synth.stop()
             self.current_synth = None
             self.pressed = False
-        self.hardware.b1_cb, self.hardware.b1_lp_cb = self.b1_handler, self.b1_lp_cb
+        self.hardware.b1_cb, self.hardware.b1_lp_cb = self.b1_handler, self.b1_lp_handler
         self.hardware.b2_cb = self.null_button_handler
         self.hardware.b3_cb = self.null_button_handler
         self.hardware.b4_cb = self.null_button_handler
