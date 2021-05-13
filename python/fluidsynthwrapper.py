@@ -42,7 +42,7 @@ class FluidSynthWrapper:
         self.loading = self.screen.get_loading()
         self.fs = fluidsynth.Synth(2, 48000, 16)
         self.fs.setting('audio.jack.autoconnect', 1)
-        # self.fs.setting('midi.autoconnect', 1)
+        self.fs.setting('midi.autoconnect', 1)
         self.sfid = None
 
     async def b1_handler(self):
@@ -84,13 +84,13 @@ class FluidSynthWrapper:
                 while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
                     print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
-                    # try:
-                    #     self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0],
-                    #                         self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0])
-                    #     self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1],
-                    #                         self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1])
-                    # except Exception as error:
-                    #     print(f"################# {error}")
+                    try:
+                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0],
+                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0])
+                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1],
+                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1])
+                    except Exception as error:
+                        print(f"################# {error}")
                     await asyncio.sleep(0.5)
                 print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
@@ -105,15 +105,15 @@ class FluidSynthWrapper:
                     await asyncio.sleep(0.5)
                 print("############# FS running")
                 while self.running:
-                    # self.fs.noteon(0, 60, 30)
-                    # self.fs.noteon(0, 67, 30)
-                    # self.fs.noteon(0, 76, 30)
+                    self.fs.noteon(0, 60, 30)
+                    self.fs.noteon(0, 67, 30)
+                    self.fs.noteon(0, 76, 30)
 
                     await asyncio.sleep(1)
 
-                    # self.fs.noteoff(0, 60)
-                    # self.fs.noteoff(0, 67)
-                    # self.fs.noteoff(0, 76)
+                    self.fs.noteoff(0, 60)
+                    self.fs.noteoff(0, 67)
+                    self.fs.noteoff(0, 76)
 
                     await asyncio.sleep(1)
                 self.fs.delete()
