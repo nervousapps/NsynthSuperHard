@@ -49,6 +49,8 @@ class Main:
                                   self.null_handler, #self.touchx_handler,
                                   self.null_handler)) #self.touchy_handler))
         self.midi = Midi()
+        # Init jack client
+        self.client = jack.Client('JackClient')
 
     async def b_handler(self):
         self.hardware.b1_cb = self.b_handler
