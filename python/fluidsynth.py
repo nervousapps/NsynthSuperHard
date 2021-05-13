@@ -4,7 +4,7 @@ import jack
 import fluidsynth
 
 
-class FluidSynth:
+class FluidSynthWrapper:
     def __init__(self, hardware, midi, screen, loop):
         self.hardware = hardware
         self.hardware.b1_cb = self.b1_handler

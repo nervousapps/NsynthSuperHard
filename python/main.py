@@ -8,7 +8,7 @@ from screen import Screen
 from midi import Midi
 
 from bristol import Bristol
-from fluidsynth import FluidSynth
+from fluidsynthwrapper import FluidSynthWrapper
 
 
 class Main:
