@@ -68,6 +68,9 @@ class Main:
         self.hardware.touchx_cb = self.null_handler
         self.hardware.touchy_cb  = self.null_handler
         print(f"Button main handler")
+        if self.current_synth:
+            self.current_synth.stop()
+            self.current_synth = None
         self.pressed = True
 
     async def null_button_handler(self):
@@ -108,8 +111,6 @@ class Main:
                         print("############# Synth created")
                         await self.current_synth.start()
                         self.screen.draw_menu(self.menu_line)
-                        self.current_synth.stop()
-                        self.current_synth = None
                         if not self.hardware.running:
                             self.hardware.start()
                 except Exception as error:
