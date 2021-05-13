@@ -82,10 +82,13 @@ class Bristol:
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
             await asyncio.sleep(0.5)
         while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
-            src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
-            dest = self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)
-            if src and dest:
-                self.client.connect(src[0], dest[0])
+            try:
+                src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
+                dest = self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)
+                if src and dest:
+                    self.client.connect(src[0], dest[0])
+            except Exception as error:
+                print(error)
             await asyncio.sleep(0.5)
         self.screen.stop_gif()
         self.screen.draw_text(f"Ready to go !")

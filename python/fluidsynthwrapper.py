@@ -89,10 +89,13 @@ class FluidSynthWrapper:
                 not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1]):
                 await asyncio.sleep(0.5)
             while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]):
-                src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
-                dest = self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)
-                if src and dest:
-                    self.client.connect(src[0], dest[0])
+                try:
+                    src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
+                    dest = self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)
+                    if src and dest:
+                        self.client.connect(src[0], dest[0])
+                except Exception as error:
+                    print(error)
                 await asyncio.sleep(0.5)
             print("############# FS running")
             sfont_id, bank, program, name = self.fs.channel_info(0)
