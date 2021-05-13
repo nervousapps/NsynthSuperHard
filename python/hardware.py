@@ -128,8 +128,8 @@ class Hardware:
             try:
                 if self.button1.is_pressed:
                   print(f"Held time : {self.button1.held_time}")
-                  print(f"Last held time : {last_held}")
-                  if self.button1.held_time and self.button1.held_time > last_held + 5:
+                  print(f"Last held time : {last_held + 5.0}")
+                  if self.button1.held_time and self.button1.held_time > last_held + 5.0:
                       last_held = self.button1.held_time
                       await self.b1_lp_cb()
                   else:
