@@ -52,7 +52,14 @@ class FluidSynthWrapper:
         pass
 
     async def rot1_handler(self, data):
-        self.preset_num += 1
+        if data:
+            self.preset_num += 1
+        else:
+            self.preset_num -= 1
+            if self.preset_num < 0:
+                self.preset_num = -self.preset_num
+        if self.preset_num > 30:
+            self.preset_num = 0
         self.fs.program_select(0, self.sfid, 0, self.preset_num)
         sfont_id, bank, program, name = self.fs.channel_info(0)
         self.screen.draw_text_box(f"Preset \n{name.decode()}")
@@ -95,9 +102,9 @@ class FluidSynthWrapper:
                 print("############# FS started")
                 self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 print("############# FS load font")
-                self.fs.program_select(0, self.sfid, 0, 0)
-                self.fs.router_begin("note")
-                self.fs.router_chan(1, 16, 1.0, 1)
+                # self.fs.program_select(0, self.sfid, 0, 0)
+                # self.fs.router_begin("note")
+                # self.fs.router_chan(1, 16, 1.0, 1)
                 print("############# FS programm select")
                 while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
