@@ -7,10 +7,7 @@ import fluidsynth
 class FluidSynthWrapper:
     def __init__(self, hardware, midi, screen, loop):
         self.hardware = hardware
-        # self.hardware.b1_cb = self.b1_handler
-        # self.hardware.b2_cb = self.null_handler
-        # self.hardware.b3_cb = self.null_handler
-        # self.hardware.b4_cb = self.null_handler
+        self.hardware.b2_cb = self.b_handler
 
 
         self.hardware.pot1_cb = self.pot1_handler
@@ -45,13 +42,13 @@ class FluidSynthWrapper:
         self.fs.setting('midi.autoconnect', 1)
         self.sfid = None
 
-    async def b1_handler(self):
+    async def b_handler(self):
         self.reload = True
 
     async def null_handler(self, data):
         pass
 
-    async def rot1_handler(self, data):
+    async def rot_handler(self, data):
         if data:
             self.preset_num += 1
         else:
@@ -113,6 +110,7 @@ class FluidSynthWrapper:
                 sfont_id, bank, program, name = self.fs.channel_info(0)
                 self.screen.stop_gif()
                 self.screen.draw_text_box(f"Preset \n{name.decode()}")
+                self.hardware.start()
                 while self.running:
                     await asyncio.sleep(1)
                 self.fs.delete()

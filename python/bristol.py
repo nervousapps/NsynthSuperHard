@@ -5,25 +5,8 @@ import jack
 class Bristol:
     def __init__(self, hardware, midi, screen, loop):
         self.hardware = hardware
-        self.hardware.b1_cb = self.b1_handler
-        self.hardware.b2_cb = self.null_button_handler
-        self.hardware.b3_cb = self.null_button_handler
-        self.hardware.b4_cb = self.null_button_handler
-
-
-        self.hardware.pot1_cb = self.null_handler
-        self.hardware.pot2_cb = self.null_handler
-        self.hardware.pot3_cb = self.null_handler
-        self.hardware.pot4_cb = self.null_handler
-        self.hardware.pot5_cb = self.null_handler
-        self.hardware.pot6_cb = self.null_handler
-        self.hardware.rot1_cb = self.rot1_handler
-        self.hardware.rot2_cb = self.null_handler
-        self.hardware.rot3_cb = self.null_handler
-        self.hardware.rot4_cb = self.null_handler
-        self.hardware.touchx_cb = self.null_handler
-        self.hardware.touchy_cb  = self.null_handler
-
+        self.hardware.b2_cb = self.b_handler
+        self.hardware.rot2_cb = self.rot_handler
 
         self.midi = midi
         self.loop = loop
@@ -124,13 +107,12 @@ class Bristol:
     async def null_handler(self, data):
         pass
 
-    async def rot1_handler(self, data):
+    async def rot_handler(self, data):
         if data:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
-            self.menu_line = [self.available_synths[self.synth_index+1], self.available_synths[self.synth_index], self.available_synths[self.synth_index-1]]
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-            self.menu_line = [self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]]
+        self.menu_line = [self.available_synths[self.synth_index-1], self.available_synths[self.synth_index], self.available_synths[self.synth_index+1]]
         self.screen.draw_menu(self.menu_line)
 
     def stop(self):
