@@ -9,20 +9,13 @@ class FluidSynthWrapper:
         self.hardware = hardware
         self.hardware.b2_cb = self.b_handler
 
-
         self.hardware.pot1_cb = self.pot1_handler
         self.hardware.pot2_cb = self.pot2_handler
         self.hardware.pot3_cb = self.pot3_handler
         self.hardware.pot4_cb = self.pot4_handler
         self.hardware.pot5_cb = self.pot5_handler
         self.hardware.pot6_cb = self.null_handler
-        self.hardware.rot1_cb = self.rot1_handler
-        self.hardware.rot2_cb = self.null_handler
-        self.hardware.rot3_cb = self.null_handler
-        self.hardware.rot4_cb = self.null_handler
-        self.hardware.touchx_cb = self.null_handler
-        self.hardware.touchy_cb  = self.null_handler
-
+        self.hardware.rot1_cb = self.rot_handler
 
         self.midi = midi
         self.loop = loop
