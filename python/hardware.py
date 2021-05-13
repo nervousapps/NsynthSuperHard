@@ -25,10 +25,10 @@ class Hardware:
         # self.b3_cb = b3_cb
         # self.b4_cb = b4_cb
         button_sounds = {
-            Button(5, bounce_time=BOUNCE): self.b1_cb,
-            Button(6, bounce_time=BOUNCE): self.b2_cb,
-            Button(13, bounce_time=BOUNCE): self.b3_cb,
-            Button(26, bounce_time=BOUNCE): self.b4_cb
+            Button(5, bounce_time=BOUNCE): b1_cb,
+            Button(6, bounce_time=BOUNCE): b2_cb,
+            Button(13, bounce_time=BOUNCE): b3_cb,
+            Button(26, bounce_time=BOUNCE): b4_cb
         }
         for button, cb in button_sounds.items():
             button.when_pressed = cb()
