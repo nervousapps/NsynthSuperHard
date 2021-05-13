@@ -129,7 +129,7 @@ class Bristol:
             while self.running:
                 if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
                     try:
-                        await asyncio.wait_for(self.start_bristol_emu(), timeout=10.0)
+                        await asyncio.wait_for(self.start_bristol_emu(), timeout=60.0)
                     except asyncio.TimeoutError:
                         print('timeout!')
                         self.screen.draw_text_box(f"{self.current_synth} is not available ...")
@@ -140,7 +140,6 @@ class Bristol:
             self.client.disconnect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
                                 self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
             result = os.popen("startBristol -exit &")
-            await asyncio.sleep(2)
         except KeyboardInterrupt:
             self.midi.stop()
             self.hardware.stop()

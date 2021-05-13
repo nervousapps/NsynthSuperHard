@@ -120,6 +120,7 @@ class Main:
                             print("############# Synth created")
                             await self.current_synth.start()
                             self.screen.draw_menu(self.menu_line)
+                            await asyncio.sleep(1)
                             if not self.hardware.running:
                                 self.hardware.start()
                     except Exception as error:
