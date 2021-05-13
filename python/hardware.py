@@ -69,11 +69,13 @@ class Hardware:
         while self.running:
             try:
                 data = self.bus.read_i2c_block_data(self.address, 0, 16)
+                print(f"################ Data : {data}")
                 if data and data != previous_data:
                     # Pot1
                     if data[6] != previous_data[6]:
                         print(f"################ Pot 1 : {data[6]}")
-                        # asyncio.run_coroutine_threadsafe(self.pot1_cb(data[6]), self.loop).result()
+                        future = asyncio.run_coroutine_threadsafe(self.pot1_cb(data[6]), self.loop)
+                        print(f"################ Result : {future.result()}")
                     # Pot2
                     if data[7] != previous_data[7]:
                         asyncio.run_coroutine_threadsafe(self.pot2_cb(data[7]), self.loop).result()
@@ -130,7 +132,8 @@ class Hardware:
             try:
                 if self.button1.is_held:
                   print(f"Hold time : {self.button1.held_time}")
-                  # asyncio.run_coroutine_threadsafe(self.b1_cb(), self.loop).result()
+                  future = asyncio.run_coroutine_threadsafe(self.b1_cb(), self.loop)
+                  print(f"################ Result : {future.result()}")
                 if self.button2.is_pressed:
                   print("Pressed")
                   asyncio.run_coroutine_threadsafe(self.b2_cb(), self.loop).result()
@@ -141,7 +144,6 @@ class Hardware:
                   print("Pressed")
                   asyncio.run_coroutine_threadsafe(self.b4_cb(), self.loop).result()
                 # await asyncio.sleep(0.05)
-                time.sleep(0.1)
             except Exception as error:
                 print(f"Buttons task : {error}")
                 # await asyncio.sleep(1)
