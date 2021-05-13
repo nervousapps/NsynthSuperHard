@@ -13,7 +13,7 @@ class FluidSynthWrapper:
         self.hardware.b4_cb = self.null_handler
 
 
-        self.hardware.pot1_cb = self.null_handler
+        self.hardware.pot1_cb = self.pot1_handler
         self.hardware.pot2_cb = self.null_handler
         self.hardware.pot3_cb = self.null_handler
         self.hardware.pot4_cb = self.null_handler
@@ -52,6 +52,10 @@ class FluidSynthWrapper:
     async def rot1_handler(self, data):
         self.preset_num += 1
         self.fs.program_select(0, self.sfid, 0, self.preset_num)
+
+    async def pot1_handler(self, data):
+        self.screen.draw_text_box(f"Volume : {data/2}")
+        self.fs.cc(0, 7, data/2)
 
     def stop(self):
         self.running = False
