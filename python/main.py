@@ -31,7 +31,8 @@ class Main:
 
         self.pressed = False
 
-        self.hardware = Hardware(self.b1_handler,
+        self.hardware = Hardware(self.loop,
+                                 self.b1_handler,
                                  self.null_button_handler,
                                  self.null_button_handler,
                                  self.null_button_handler,
@@ -79,7 +80,7 @@ class Main:
             self.screen.draw_text_box("NsynthSuperHard")
             await asyncio.sleep(2)
             self.screen.draw_menu(self.menu_line)
-            self.hardware.start(self.loop)
+            self.hardware.start()
 
             # self.loop.create_task(self.midi.midi_over_uart_task())
 

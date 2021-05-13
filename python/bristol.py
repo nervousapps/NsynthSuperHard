@@ -110,7 +110,7 @@ class Bristol:
         await asyncio.sleep(2)
         self.reload = False
         self.screen.draw_menu(self.menu_line)
-        self.hardware.start(self.loop)
+        self.hardware.start()
         print("Ready to go !")
 
     def b1_handler(self):
