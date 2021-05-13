@@ -67,6 +67,7 @@ class Hardware:
         previous_data = self.previous_data
         print("################ In check inputs task")
         while self.running:
+            print("################ In check inputs task")
             try:
                 data = self.bus.read_i2c_block_data(self.address, 0, 16)
                 if data and data != previous_data:
@@ -115,6 +116,7 @@ class Hardware:
                     previous_data = data
                     # await self.inputs_cb(data)
                 # await asyncio.sleep(0.05)
+                time.sleep(0.1)
             except IOError:
                 print('did not respond')
                 # await asyncio.sleep(1)
@@ -125,6 +127,7 @@ class Hardware:
     def check_buttons_task(self):
         print("################ In check buttons task")
         while self.running:
+            print("################ In check buttons task")
             try:
                 if self.button1.is_pressed:
                   if self.button1.is_held:
@@ -140,6 +143,7 @@ class Hardware:
                   print("Pressed")
                   asyncio.run_coroutine_threadsafe(self.b4_cb(), self.loop).result()
                 # await asyncio.sleep(0.05)
+                time.sleep(0.1)
             except Exception as error:
                 print(f"Buttons task : {error}")
                 # await asyncio.sleep(1)
