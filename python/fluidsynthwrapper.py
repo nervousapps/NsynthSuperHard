@@ -41,7 +41,7 @@ class FluidSynthWrapper:
         self.running = False
         self.loading = self.screen.get_loading()
         self.fs = fluidsynth.Synth(gain=2, samplerate=48000, channels=256)
-        self.sfid = "/usr/share/sounds/sf2/FluidR3_GM.sf2"
+        self.sfid = None
 
     async def b1_handler(self):
         self.reload = True
@@ -69,7 +69,7 @@ class FluidSynthWrapper:
                 self.screen.draw_text_box(f"FluidSynth")
                 self.fs.start()
                 print("############# FS started")
-                sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
+                self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
                 print("############# FS programm select")
