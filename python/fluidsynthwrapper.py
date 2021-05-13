@@ -14,10 +14,10 @@ class FluidSynthWrapper:
 
 
         self.hardware.pot1_cb = self.pot1_handler
-        self.hardware.pot2_cb = self.null_handler
-        self.hardware.pot3_cb = self.null_handler
-        self.hardware.pot4_cb = self.null_handler
-        self.hardware.pot5_cb = self.null_handler
+        self.hardware.pot2_cb = self.pot2_handler
+        self.hardware.pot3_cb = self.pot3_handler
+        self.hardware.pot4_cb = self.pot4_handler
+        self.hardware.pot5_cb = self.pot5_handler
         self.hardware.pot6_cb = self.null_handler
         self.hardware.rot1_cb = self.rot1_handler
         self.hardware.rot2_cb = self.null_handler
@@ -61,6 +61,22 @@ class FluidSynthWrapper:
         self.screen.draw_text_box(f"Volume : {int(data/2)}")
         self.fs.cc(0, 7, int(data/2))
 
+    async def pot2_handler(self, data):
+        self.screen.draw_text_box(f"expression : {int(data/2)}")
+        self.fs.cc(0, 11, int(data/2))
+
+    async def pot3_handler(self, data):
+        self.screen.draw_text_box(f"sustain : {int(data/2)}")
+        self.fs.cc(0, 64, int(data/2))
+
+    async def pot4_handler(self, data):
+        self.screen.draw_text_box(f"reverb : {int(data/2)}")
+        self.fs.cc(0, 91, int(data/2))
+
+    async def pot5_handler(self, data):
+        self.screen.draw_text_box(f"chorus : {int(data/2)}")
+        self.fs.cc(0, 93, int(data/2))
+
     def stop(self):
         self.running = False
 
@@ -80,6 +96,7 @@ class FluidSynthWrapper:
                 self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
+                self.fs.router_begin("note")
                 print("############# FS programm select")
                 while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
