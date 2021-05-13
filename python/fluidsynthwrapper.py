@@ -97,7 +97,7 @@ class FluidSynthWrapper:
                 print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
                 self.fs.router_begin("note")
-                self.fs.router_chan(self, 0, 16, 0.0, 0):
+                self.fs.router_chan(0, 16, 0.0, 0)
                 print("############# FS programm select")
                 while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
                     not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
