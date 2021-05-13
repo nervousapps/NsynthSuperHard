@@ -71,7 +71,7 @@ class FluidSynthWrapper:
                 await asyncio.sleep(2)
                 # result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
-                self.fs.start()
+                self.fs.start(driver="jack", midi_driver="jack")
                 print("############# FS started")
                 self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 print("############# FS load font")
