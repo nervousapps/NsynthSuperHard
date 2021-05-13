@@ -99,7 +99,7 @@ class FluidSynthWrapper:
             self.hardware.start()
             while self.running:
                 await asyncio.sleep(1)
-            self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+            self.client.disconnect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
                                 self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
             self.fs.delete()
         except KeyboardInterrupt:
