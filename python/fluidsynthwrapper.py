@@ -99,7 +99,7 @@ class FluidSynthWrapper:
                                             self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
                     except Exception as error:
                         print(f"################# {error}")
-                        if 'already exists' in error:
+                        if 'already exists' in str(error):
                             break
                     await asyncio.sleep(0.5)
                 print("############# FS running")
