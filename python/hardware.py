@@ -123,13 +123,14 @@ class Hardware:
 
     async def check_buttons_task(self):
         print("################ In check buttons task")
-        last_hold = 0
+        last_held = 0
         while self.running:
             try:
                 if self.button1.is_pressed:
                   print(f"Held time : {self.button1.held_time}")
-                  if self.button1.held_time and self.button1.held_time > last_hold + 5:
-                      last_hold = self.button1.held_time
+                  print(f"Last held time : {last_held}")
+                  if self.button1.held_time and self.button1.held_time > last_held + 5:
+                      last_held = self.button1.held_time
                       await self.b1_lp_cb()
                   else:
                       await self.b1_cb()
