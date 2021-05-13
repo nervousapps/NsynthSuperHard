@@ -22,6 +22,12 @@ class Main:
         ]
 
         self.reload = False
+        self.loading = self.screen.get_loading()
+        self.synth_index = 1
+        self.current_synth = None
+        self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
+
+        self.pressed = False
 
         self.screen = Screen()
         self.hardware = Hardware(self.b1_handler,
@@ -41,13 +47,6 @@ class Main:
                                   self.null_handler, #self.touchx_handler,
                                   self.null_handler)) #self.touchy_handler))
         self.midi = Midi()
-
-        self.loading = self.screen.get_loading()
-        self.synth_index = 1
-        self.current_synth = None
-        self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
-
-        self.pressed = False
 
     def b1_handler(self):
         print(f"Button main handler")
