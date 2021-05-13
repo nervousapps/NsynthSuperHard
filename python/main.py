@@ -68,10 +68,10 @@ class Main:
     async def rot1_handler(self, data):
         if data:
             self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
-            self.menu_line = ("", self.available_synths[0], self.available_synths[1])
+            self.menu_line = ["", self.available_synths[0], self.available_synths[1]]
         else:
             self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
-            self.menu_line = ("", self.available_synths[1], self.available_synths[0])
+            self.menu_line = ["", self.available_synths[1], self.available_synths[0]]
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
