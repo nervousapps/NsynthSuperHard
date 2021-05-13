@@ -127,7 +127,6 @@ class Hardware:
     def check_buttons_task(self):
         print("################ In check buttons task")
         while self.running:
-            print("################ In check buttons task")
             try:
                 if self.button1.is_held:
                   print(f"Hold time : {self.button1.held_time}")
