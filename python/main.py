@@ -21,6 +21,8 @@ class Main:
             {"name": "FluidSynth", "class": FluidSynthWrapper}
         ]
 
+        self.screen = Screen()
+
         self.reload = False
         self.loading = self.screen.get_loading()
         self.synth_index = 1
@@ -29,7 +31,6 @@ class Main:
 
         self.pressed = False
 
-        self.screen = Screen()
         self.hardware = Hardware(self.b1_handler,
                                  self.null_handler,
                                  self.null_handler,
