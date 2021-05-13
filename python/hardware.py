@@ -129,9 +129,9 @@ class Hardware:
         while self.running:
             try:
                 if self.button1.is_pressed:
-                  print(f"Hold time : {self.button1.hold_time}")
+                  print(f"Hold time : {self.button1.held_time}")
                   # self.loop.create_task(self.b1_cb())
-                  fut = asyncio.run_coroutine_threadsafe(self.b1_cb, asyncio.new_event_loop())
+                  fut = asyncio.run_coroutine_threadsafe(self.b1_cb(), asyncio.new_event_loop())
                   print(f"Result : {fut.result()}")
                 if self.button2.is_pressed:
                   print("Pressed")
