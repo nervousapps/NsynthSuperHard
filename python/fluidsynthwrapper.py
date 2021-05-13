@@ -40,7 +40,7 @@ class FluidSynthWrapper:
         self.reload = False
         self.running = False
         self.loading = self.screen.get_loading()
-        self.fs = fluidsynth.Synth()
+        self.fs = fluidsynth.Synth(gain=2, samplerate=44100, channels=256)
         self.sfid = "/usr/share/sounds/sf2/FluidR3_GM.sf2"
 
     async def b1_handler(self):
