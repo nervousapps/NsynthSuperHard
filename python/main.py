@@ -73,6 +73,8 @@ class Main:
         else:
             self.synth_index = 1
             self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
+        print(data)
+        print(self.synth_index)
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
