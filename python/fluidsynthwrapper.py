@@ -50,6 +50,7 @@ class FluidSynthWrapper:
 
     async def rot1_handler(self, data):
         self.preset_num += 1
+        self.fs.program_select(0, sfid, 0, self.preset_num)
 
     def stop(self):
         self.running = False
@@ -67,7 +68,7 @@ class FluidSynthWrapper:
                 self.screen.draw_text_box(f"FluidSynth")
                 self.fs.start()
                 sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
-                self.fs.program_select(track=0, soundfontid=sfid, banknum=0, presetnum=0)
+                self.fs.program_select(0, sfid, 0, 0)
                 while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
                     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
                     try:
