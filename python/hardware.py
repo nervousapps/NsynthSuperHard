@@ -16,17 +16,26 @@ class Hardware:
         """
         self.running = True
         self.pressed = False
-        self.button1 = Button(5, bounce_time=BOUNCE)
-        self.button2 = Button(6, bounce_time=BOUNCE)
-        self.button3 = Button(13, bounce_time=BOUNCE)
-        self.button4 = Button(26, bounce_time=BOUNCE)
+        # self.button1 = Button(5, bounce_time=BOUNCE)
+        # self.button2 = Button(6, bounce_time=BOUNCE)
+        # self.button3 = Button(13, bounce_time=BOUNCE)
+        # self.button4 = Button(26, bounce_time=BOUNCE)
+        # self.b1_cb = b1_cb
+        # self.b2_cb = b2_cb
+        # self.b3_cb = b3_cb
+        # self.b4_cb = b4_cb
+        button_sounds = {
+            Button(5, bounce_time=BOUNCE): self.b1_cb,
+            Button(6, bounce_time=BOUNCE): self.b2_cb,
+            Button(13, bounce_time=BOUNCE): self.b3_cb,
+            Button(26, bounce_time=BOUNCE): self.b4_cb
+        }
+        for button, cb in button_sounds.items():
+            button.when_pressed = await cb()
+
+
 
         self.bus = smbus.SMBus(1)
-
-        self.b1_cb = b1_cb
-        self.b2_cb = b2_cb
-        self.b3_cb = b3_cb
-        self.b4_cb = b4_cb
 
         self.pot1_cb, self.pot2_cb, self.pot3_cb, self.pot4_cb, self.pot5_cb, self.pot6_cb, self.rot1_cb, self.rot2_cb, self.rot3_cb, self.rot4_cb, self.touchx_cb, self.touchy_cb = inputs_cbs
 
@@ -61,16 +70,6 @@ class Hardware:
         while self.running:
             try:
                 data = self.bus.read_i2c_block_data(self.address, 0, 16)
-                # data = b"".join([bytes(chr(d), 'utf-8') for d in data]) #map(chr, data))
-                # unpacked = struct.unpack('2b4b6BI', data)
-                # touch = unpacked[:2]
-                # rots = unpacked[2:6]
-                # pots = unpacked[6:12]
-                # chk = unpacked[12]
-                # print('touch={} rots={} pots={} chk=0x{:08x} {}'.format(
-                #     touch, rots, pots, chk,
-                #     'passed' if test_checksum(data) else 'failed',
-                # ))
                 if data and data != previous_data:
                     # Pot1
                     if data[6] != previous_data[6]:
@@ -126,21 +125,21 @@ class Hardware:
 
     async def check_buttons_task(self):
         print("################ In check buttons task")
-        while self.running:
-            try:
-                if self.button1.is_pressed:
-                  print("Pressed")
-                  await self.b1_cb()
-                if self.button2.is_pressed:
-                  print("Pressed")
-                  await self.b2_cb()
-                if self.button3.is_pressed:
-                  print("Pressed")
-                  await self.b3_cb()
-                if self.button4.is_pressed:
-                  print("Pressed")
-                  await self.b4_cb()
-                await asyncio.sleep(0.05)
-            except Exception as error:
-                print(f"Buttons task : {error}")
-                await asyncio.sleep(1)
+        # while self.running:
+        #     try:
+        #         if self.button1.is_pressed:
+        #           print("Pressed")
+        #           await self.b1_cb()
+        #         if self.button2.is_pressed:
+        #           print("Pressed")
+        #           await self.b2_cb()
+        #         if self.button3.is_pressed:
+        #           print("Pressed")
+        #           await self.b3_cb()
+        #         if self.button4.is_pressed:
+        #           print("Pressed")
+        #           await self.b4_cb()
+        #         await asyncio.sleep(0.05)
+        #     except Exception as error:
+        #         print(f"Buttons task : {error}")
+        #         await asyncio.sleep(1)

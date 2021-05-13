@@ -96,52 +96,17 @@ class FluidSynthWrapper:
                 result = os.popen(f"a2jmidid -e")
                 self.screen.stop_gif()
                 await asyncio.sleep(1)
-                # result = os.popen(f"fluidsynth -a jack -j -i /usr/share/sounds/sf2/FluidR3_GM.sf2 &")
                 self.screen.draw_text_box(f"FluidSynth")
                 self.fs.start(driver="jack", midi_driver="jack")
                 print("############# FS started")
                 self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
                 print("############# FS load font")
-                # self.fs.program_select(0, self.sfid, 0, 0)
-                # self.fs.router_begin("note")
-                # self.fs.router_chan(1, 16, 1.0, 1)
+                self.fs.program_select(0, self.sfid, 0, 0)
                 print("############# FS programm select")
-                while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
-                    not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
-                    print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
-                    try:
-                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0],
-                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0])
-                        self.client.connect(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1],
-                                            self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1])
-                    except Exception as error:
-                        print(f"################# {error}")
-                    await asyncio.sleep(0.5)
-                print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]))
-                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]):
-                    print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]))
-                    try:
-                        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                            self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
-                    except Exception as error:
-                        print(f"################# {error}")
-                        if 'already exists' in str(error):
-                            break
-                    await asyncio.sleep(0.5)
                 print("############# FS running")
                 sfont_id, bank, program, name = self.fs.channel_info(0)
                 self.screen.draw_text_box(f"Preset \n{name.decode()}")
                 while self.running:
-                    # self.fs.noteon(0, 60, 30)
-                    # self.fs.noteon(0, 67, 30)
-                    # self.fs.noteon(0, 76, 30)
-
-                    await asyncio.sleep(1)
-
-                    # self.fs.noteoff(0, 60)
-                    # self.fs.noteoff(0, 67)
-                    # self.fs.noteoff(0, 76)
-
                     await asyncio.sleep(1)
                 self.fs.delete()
         except KeyboardInterrupt:
