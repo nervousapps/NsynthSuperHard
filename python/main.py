@@ -50,7 +50,7 @@ class Main:
                                   self.null_handler)) #self.touchy_handler))
         self.midi = Midi()
 
-    async def b1_handler(self):
+    def b1_handler(self):
         print(f"Button main handler")
         if self.current_synth:
             self.current_synth.stop()
