@@ -63,7 +63,7 @@ class Hardware:
         # self.loop.create_task(self.check_inputs_task())
         # self.loop.create_task(self.check_buttons_task())
 
-    async def check_inputs_task(self):
+    def check_inputs_task(self):
         previous_data = self.previous_data
         print("################ In check inputs task")
         while self.running:
@@ -114,15 +114,15 @@ class Hardware:
                     #         print(f"Data {index} : {value}")
                     previous_data = data
                     # await self.inputs_cb(data)
-                await asyncio.sleep(0.05)
+                # await asyncio.sleep(0.05)
             except IOError:
                 print('did not respond')
-                await asyncio.sleep(1)
+                # await asyncio.sleep(1)
             except Exception as error:
                 print(f"Inputs task : {error}")
-                await asyncio.sleep(1)
+                # await asyncio.sleep(1)
 
-    async def check_buttons_task(self):
+    def check_buttons_task(self):
         print("################ In check buttons task")
         while self.running:
             try:
@@ -139,7 +139,7 @@ class Hardware:
                 if self.button4.is_pressed:
                   print("Pressed")
                   self.loop.call_soon_threadsafe(self.b4_cb())
-                await asyncio.sleep(0.05)
+                # await asyncio.sleep(0.05)
             except Exception as error:
                 print(f"Buttons task : {error}")
-                await asyncio.sleep(1)
+                # await asyncio.sleep(1)
