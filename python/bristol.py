@@ -5,10 +5,10 @@ import jack
 class Bristol:
     def __init__(self, hardware, midi, screen, loop):
         self.hardware = hardware
-        # self.hardware.b1_cb = self.b1_handler
-        # self.hardware.b2_cb = self.null_button_handler
-        # self.hardware.b3_cb = self.null_button_handler
-        # self.hardware.b4_cb = self.null_button_handler
+        self.hardware.b1_cb = self.b1_handler
+        self.hardware.b2_cb = self.null_button_handler
+        self.hardware.b3_cb = self.null_button_handler
+        self.hardware.b4_cb = self.null_button_handler
 
 
         self.hardware.pot1_cb = self.null_handler
