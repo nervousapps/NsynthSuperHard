@@ -82,8 +82,10 @@ class Bristol:
             not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
             await asyncio.sleep(0.5)
         while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
-            self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
+            src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
+            dest = self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)
+            if src and dest:
+                self.client.connect(src[0], dest[0])
             await asyncio.sleep(0.5)
         self.screen.stop_gif()
         self.screen.draw_text(f"Ready to go !")
@@ -136,8 +138,10 @@ class Bristol:
                         await asyncio.sleep(2)
                     self.reload = False
                 await asyncio.sleep(0.1)
-            self.client.disconnect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)[0])
+            src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
+            dest = self.client.get_ports(is_midi=True, name_pattern='bristol', is_input=True)
+            if src and dest:
+                self.client.disconnect(src[0], dest[0])
             result = os.popen("startBristol -exit &")
         except KeyboardInterrupt:
             self.midi.stop()

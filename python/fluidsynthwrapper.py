@@ -89,8 +89,10 @@ class FluidSynthWrapper:
                 not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1]):
                 await asyncio.sleep(0.5)
             while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]):
-                self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                    self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
+                src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
+                dest = self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)
+                if src and dest:
+                    self.client.connect(src[0], dest[0])
                 await asyncio.sleep(0.5)
             print("############# FS running")
             sfont_id, bank, program, name = self.fs.channel_info(0)
@@ -99,8 +101,10 @@ class FluidSynthWrapper:
             self.hardware.start()
             while self.running:
                 await asyncio.sleep(1)
-            self.client.disconnect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                                self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
+            src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
+            dest = self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)
+            if src and dest:
+                self.client.disconnect(src[0], dest[0])
             self.fs.delete()
         except KeyboardInterrupt:
             self.midi.stop()
