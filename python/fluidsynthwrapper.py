@@ -42,7 +42,7 @@ class FluidSynthWrapper:
         self.loading = self.screen.get_loading()
         self.fs = fluidsynth.Synth(2, 48000, 16)
         self.fs.setting('audio.jack.autoconnect', 1)
-        self.fs.setting('midi.autoconnect', 1)
+        # self.fs.setting('midi.autoconnect', 1)
         self.sfid = None
 
     async def b1_handler(self):
@@ -92,13 +92,13 @@ class FluidSynthWrapper:
                     # except Exception as error:
                     #     print(f"################# {error}")
                     await asyncio.sleep(0.5)
-                # while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_input=True)[0]):
-                #     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_input=True)[0]))
-                    # try:
-                    #     self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                    #                         self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
-                    # except Exception as error:
-                    #     print(f"################# {error}")
+                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_input=True)[0]):
+                    print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_input=True)[0]))
+                    try:
+                        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                                            self.client.get_ports(is_midi=True, name_pattern='FLUID Synth', is_input=True)[0])
+                    except Exception as error:
+                        print(f"################# {error}")
                     await asyncio.sleep(0.5)
                 print("############# FS running")
                 while self.running:
