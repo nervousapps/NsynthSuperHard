@@ -81,14 +81,25 @@ class FluidSynthWrapper:
                 print("############# FS load font")
                 self.fs.program_select(0, self.sfid, 0, 0)
                 print("############# FS programm select")
-                # while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
-                #     print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
-                #     try:
-                #         self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
-                #                             self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
-                #     except Exception as error:
-                #         print(f"################# {error}")
-                #     await asyncio.sleep(0.5)
+                while not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]) or \
+                    not self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1]):
+                    print(self.client.get_all_connections(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0]))
+                    try:
+                        self.client.connect(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[0],
+                                            self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0])
+                        self.client.connect(self.client.get_ports(is_input=True, is_audio=True, name_pattern='playback')[1],
+                                            self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1])
+                    except Exception as error:
+                        print(f"################# {error}")
+                    await asyncio.sleep(0.5)
+                while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]):
+                    print(self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0]))
+                    try:
+                        self.client.connect(self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)[0],
+                                            self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0])
+                    except Exception as error:
+                        print(f"################# {error}")
+                    await asyncio.sleep(0.5)
                 print("############# FS running")
                 while self.running:
                     await asyncio.sleep(1)
