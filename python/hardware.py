@@ -143,7 +143,7 @@ class Hardware:
                 if self.button4.is_pressed:
                   print("Pressed")
                   await self.b4_cb()
-                await asyncio.sleep(0.05)
+                await asyncio.sleep(0.2)
             except Exception as error:
                 print(f"Buttons task : {error}")
                 await asyncio.sleep(1)
