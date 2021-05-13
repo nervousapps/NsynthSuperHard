@@ -128,7 +128,7 @@ class Hardware:
         while self.running:
             try:
                 if self.button1.is_pressed:
-                  print(f"Pressed : {self.button1.held_time()}")
+                  print(f"Pressed : {self.button1.held_time}")
                   await self.b1_cb()
                 if self.button2.is_pressed:
                   print("Pressed")

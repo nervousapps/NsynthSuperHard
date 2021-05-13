@@ -67,10 +67,10 @@ class Main:
 
     async def rot1_handler(self, data):
         if data:
-            self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-2 else 0
+            self.synth_index = self.synth_index + 1 if self.synth_index < len(self.available_synths)-1 else 0
             self.menu_line = ["", self.available_synths[0]["name"], self.available_synths[1]["name"]]
         else:
-            self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-2
+            self.synth_index = self.synth_index - 1 if self.synth_index > 0 else len(self.available_synths)-1
             self.menu_line = ["", self.available_synths[1]["name"], self.available_synths[0]["name"]]
         self.screen.draw_menu(self.menu_line)
 
@@ -91,7 +91,7 @@ class Main:
                                                           midi=self.midi,
                                                           screen=self.screen,
                                                           loop=self.loop)
-                        print("############# FS created")
+                        print("############# Synth created")
                         await self.current_synth.start()
                         self.menu_line = ["", self.available_synths[self.synth_index]["name"], ""]
                         self.screen.draw_menu(self.menu_line)
