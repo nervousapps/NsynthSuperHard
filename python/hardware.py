@@ -127,8 +127,8 @@ class Hardware:
         while self.running:
             try:
                 if self.button1.is_pressed:
-                  print(f"Hold time : {self.button1.held_time}")
-                  if self.button1.held_time > last_hold + 5:
+                  print(f"Held time : {self.button1.held_time}")
+                  if self.button1.held_time and self.button1.held_time > last_hold + 5:
                       last_hold = self.button1.held_time
                       await self.b1_lp_cb()
                   else:
