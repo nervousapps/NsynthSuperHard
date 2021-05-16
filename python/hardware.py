@@ -26,10 +26,10 @@ class Hardware:
         self.pressed = False
 
         self.buttons = {
-            Button(5, bounce_time=BOUNCE): b1_cb,
-            Button(6, bounce_time=BOUNCE): b2_cb,
-            Button(13, bounce_time=BOUNCE): b3_cb,
-            Button(26, bounce_time=BOUNCE): b4_cb
+            Button(5): b1_cb,
+            Button(6): b2_cb,
+            Button(13): b3_cb,
+            Button(26): b4_cb
         }
         for button, _ in self.buttons.items():
             button.when_pressed = self.button_pressed_cb
