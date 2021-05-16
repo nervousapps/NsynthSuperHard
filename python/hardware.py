@@ -54,8 +54,8 @@ class Hardware:
         self.running = False
 
     def start(self):
-        self.running = True
         if not self.task:
+            self.running = True
             self.task = self.loop.create_task(self.check_inputs_task())
 
     async def check_inputs_task(self):
@@ -105,7 +105,7 @@ class Hardware:
                     if data[1] != previous_data[1]:
                         await self.touchy_cb(data[1])
                     previous_data = data
-                await asyncio.sleep(0.08)
+                await asyncio.sleep(0.1)
             except IOError:
                 print('did not respond')
                 await asyncio.sleep(1)
