@@ -20,7 +20,7 @@ class Hardware:
         """
         inputs_cbs = (pot1, pot2, pot3, pot4, pot5, pot6, rot1, rot2, rot3, rot4, touchx, touchy)
         """
-        # Device.pin_factory = PiGPIOFactory()
+        Device.pin_factory = PiGPIOFactory()
         self.loop = loop
         self.running = True
         self.pressed = False
@@ -48,6 +48,7 @@ class Hardware:
     def button_pressed_cb(self, device):
         print(device)
         for button, cb in self.buttons.items():
+            print(button)
             if device == button:
                 self.loop.create_task(cb())
 
