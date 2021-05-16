@@ -24,9 +24,10 @@ class Hardware:
         self.loop = loop
         self.running = True
         self.pressed = False
+        self.task = None
 
         self.buttons = {
-            Button(5, bounce_time=float(BOUNCE)): b1_cb,
+            Button(5): b1_cb,
             Button(6): b2_cb,
             Button(13): b3_cb,
             Button(26): b4_cb
@@ -57,15 +58,8 @@ class Hardware:
 
     def start(self):
         self.running = True
-        # with concurrent.futures.ThreadPoolExecutor() as pool:
-        #     result = asyncio.ensure_future(self.loop.run_in_executor(
-        #         pool, self.check_inputs_task))
-        #     print('custom input thread pool', result)
-        #     result = asyncio.ensure_future(self.loop.run_in_executor(
-        #         pool, self.check_buttons_task))
-        #     print('custom button thread pool', result)
-        self.loop.create_task(self.check_inputs_task())
-        # self.loop.create_task(self.check_buttons_task())
+        if not self.task:
+            self.task = self.loop.create_task(self.check_inputs_task())
 
     async def check_inputs_task(self):
         previous_data = self.previous_data
@@ -113,37 +107,11 @@ class Hardware:
                     # TouchY
                     if data[1] != previous_data[1]:
                         await self.touchy_cb(data[1])
-                    # for index, value in enumerate(data):
-                    #     if previous_data and value != previous_data[index]:
-                    #         print(f"Data {index} : {value}")
                     previous_data = data
-                await asyncio.sleep(0.05)
+                await asyncio.sleep(0.08)
             except IOError:
                 print('did not respond')
                 await asyncio.sleep(1)
             except Exception as error:
                 print(f"Inputs task : {error}")
                 await asyncio.sleep(1)
-
-    # async def check_buttons_task(self):
-    #     print("################ In check buttons task")
-    #     last_held = 0
-    #     while self.running:
-    #         try:
-    #             if self.button1.is_pressed:
-    #               print(f"Held time : {self.button1.held_time}")
-    #               print(f"Last held time : {last_held + 5.0}")
-    #               await self.b1_cb()
-    #             if self.button2.is_pressed:
-    #               print("Pressed")
-    #               await self.b2_cb()
-    #             if self.button3.is_pressed:
-    #               print("Pressed")
-    #               await self.b3_cb()
-    #             if self.button4.is_pressed:
-    #               print("Pressed")
-    #               await self.b4_cb()
-    #             await asyncio.sleep(0.2)
-    #         except Exception as error:
-    #             print(f"Buttons task : {error}")
-    #             await asyncio.sleep(1)
