@@ -52,6 +52,8 @@ class Hardware:
 
     def stop(self):
         self.running = False
+        self.task.cancel()
+        self.task = None
 
     def start(self):
         if not self.task:
@@ -112,5 +114,3 @@ class Hardware:
             except Exception as error:
                 print(f"Inputs task : {error}")
                 await asyncio.sleep(1)
-        self.task.cancel()
-        self.task = None
