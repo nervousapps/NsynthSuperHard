@@ -112,3 +112,5 @@ class Hardware:
             except Exception as error:
                 print(f"Inputs task : {error}")
                 await asyncio.sleep(1)
+        self.task.cancel()
+        self.task = None
