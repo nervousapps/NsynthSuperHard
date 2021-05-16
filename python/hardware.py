@@ -10,7 +10,7 @@ from gpiozero.pins.pigpio import PiGPIOFactory
 from gpiozero import Device, Button
 
 
-BOUNCE = 5.0
+BOUNCE = 5
 
 class Hardware:
     """
