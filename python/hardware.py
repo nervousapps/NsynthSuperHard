@@ -48,8 +48,8 @@ class Hardware:
     def button_pressed_cb(self, device):
         print(device)
         for button, cb in self.buttons.items():
-            # if device == button:
-            self.loop.create_task(cb())
+            if device == button:
+                self.loop.create_task(cb())
 
     def stop(self):
         self.running = False
