@@ -6,36 +6,33 @@ import concurrent.futures
 import time
 import smbus
 import struct
-from gpiozero import Button
+from gpiozero.pins.pigpio import PiGPIOFactory
+from gpiozero import Device, Button
+
 
 BOUNCE = 5.0
 
 class Hardware:
+    """
+    Drive the OpenNsynthSuper hardware (encoders, pushbuttons, touch panel and potentiometers)
+    """
     def __init__(self, loop, b1_cb, b2_cb, b3_cb, b4_cb, inputs_cbs):
         """
         inputs_cbs = (pot1, pot2, pot3, pot4, pot5, pot6, rot1, rot2, rot3, rot4, touchx, touchy)
         """
+        Device.pin_factory = PiGPIOFactory()
         self.loop = loop
         self.running = True
         self.pressed = False
-        self.button1 = Button(5, bounce_time=BOUNCE)
-        self.button2 = Button(6, bounce_time=BOUNCE)
-        self.button3 = Button(13, bounce_time=BOUNCE)
-        self.button4 = Button(26, bounce_time=BOUNCE)
-        self.b1_cb = b1_cb
-        self.b2_cb = b2_cb
-        self.b3_cb = b3_cb
-        self.b4_cb = b4_cb
-        # button_sounds = {
-        #     Button(5, bounce_time=BOUNCE): b1_cb,
-        #     Button(6, bounce_time=BOUNCE): b2_cb,
-        #     Button(13, bounce_time=BOUNCE): b3_cb,
-        #     Button(26, bounce_time=BOUNCE): b4_cb
-        # }
-        # for button, cb in button_sounds.items():
-        #     button.when_pressed = cb
 
-
+        self.buttons = {
+            Button(5, bounce_time=BOUNCE): b1_cb,
+            Button(6, bounce_time=BOUNCE): b2_cb,
+            Button(13, bounce_time=BOUNCE): b3_cb,
+            Button(26, bounce_time=BOUNCE): b4_cb
+        }
+        for button, _ in self.buttons.items():
+            button.when_pressed = self.button_pressed_cb
 
         self.bus = smbus.SMBus(1)
 
@@ -47,6 +44,12 @@ class Hardware:
                 self.previous_data = self.bus.read_i2c_block_data(self.address, 0, 16)
         except IOError:
             print('did not respond')
+
+    def button_pressed_cb(self, device):
+        print(device)
+        for button, cb in self.buttons.items():
+            # if device == button:
+            self.loop.create_task(cb())
 
     def stop(self):
         self.running = False
