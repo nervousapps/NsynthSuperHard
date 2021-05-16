@@ -52,8 +52,9 @@ class Hardware:
 
     def stop(self):
         self.running = False
-        self.task.cancel()
-        self.task = None
+        if self.task:
+            self.task.cancel()
+            self.task = None
 
     def start(self):
         if not self.task:
