@@ -47,11 +47,8 @@ class Hardware:
             print('did not respond')
 
     def button_pressed_cb(self, device):
-        print(device)
-        for button, cb in self.buttons.items():
-            print(button)
-            if device == button:
-                self.loop.create_task(cb())
+        print(self.buttons[device])
+        self.loop.create_task(self.buttons[device]())
 
     def stop(self):
         self.running = False
