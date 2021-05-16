@@ -65,6 +65,8 @@ setup_service() {
   sudo cp nsynthsuperhard.service /lib/systemd/system/nsynthsuperhard.service
   sudo chmod 644 /lib/systemd/system/nsynthsuperhard.service
   sudo systemctl daemon-reload
+
+  sudo pigpiod
   sudo systemctl enable nsynthsuperhard.service
 }
 
