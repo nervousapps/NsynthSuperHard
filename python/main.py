@@ -55,22 +55,22 @@ class Main:
     async def b_handler(self):
         print(f"Button main handler")
         if self.current_synth:
-            self.hardware.b1_cb = self.b_handler
-            self.hardware.b2_cb = self.null_button_handler
-            self.hardware.b3_cb = self.null_button_handler
-            self.hardware.b4_cb = self.null_button_handler
-            self.hardware.pot1_cb = self.null_handler
-            self.hardware.pot2_cb = self.null_handler
-            self.hardware.pot3_cb = self.null_handler
-            self.hardware.pot4_cb = self.null_handler
-            self.hardware.pot5_cb = self.null_handler
-            self.hardware.pot6_cb = self.null_handler
-            self.hardware.rot1_cb = self.rot_handler
-            self.hardware.rot2_cb = self.null_handler
-            self.hardware.rot3_cb = self.null_handler
-            self.hardware.rot4_cb = self.null_handler
-            self.hardware.touchx_cb = self.null_handler
-            self.hardware.touchy_cb  = self.null_handler
+            # self.hardware.b1_cb = self.b_handler
+            # self.hardware.b2_cb = self.null_button_handler
+            # self.hardware.b3_cb = self.null_button_handler
+            # self.hardware.b4_cb = self.null_button_handler
+            # self.hardware.pot1_cb = self.null_handler
+            # self.hardware.pot2_cb = self.null_handler
+            # self.hardware.pot3_cb = self.null_handler
+            # self.hardware.pot4_cb = self.null_handler
+            # self.hardware.pot5_cb = self.null_handler
+            # self.hardware.pot6_cb = self.null_handler
+            # self.hardware.rot1_cb = self.rot_handler
+            # self.hardware.rot2_cb = self.null_handler
+            # self.hardware.rot3_cb = self.null_handler
+            # self.hardware.rot4_cb = self.null_handler
+            # self.hardware.touchx_cb = self.null_handler
+            # self.hardware.touchy_cb  = self.null_handler
             self.current_synth.stop()
             self.current_synth = None
         self.pressed = True
@@ -123,11 +123,9 @@ class Main:
                                                               screen=self.screen,
                                                               loop=self.loop,
                                                               jack_client=self.client)
-                            print(self.hardware.b2_cb)
                             print("############# Synth created")
                             await self.current_synth.start()
-                            while self.current_synth.running:
-                                await asyncio.sleep(10)
+                            print(self.hardware.b2_cb)
                             self.screen.draw_menu(self.menu_line)
                             await asyncio.sleep(1)
                             self.hardware.start()
