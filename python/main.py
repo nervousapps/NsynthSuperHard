@@ -52,6 +52,24 @@ class Main:
         # Init jack client
         self.client = jack.Client('JackClient')
 
+    def set_hardware_handlers(self):
+        self.hardware.b1_cb = self.b_handler
+        self.hardware.b2_cb = self.current_synth.b_handler
+        self.hardware.b3_cb = None
+        self.hardware.b4_cb = None
+        self.hardware.pot1_cb = None
+        self.hardware.pot2_cb = None
+        self.hardware.pot3_cb = None
+        self.hardware.pot4_cb = None
+        self.hardware.pot5_cb = None
+        self.hardware.pot6_cb = None
+        self.hardware.rot1_cb = self.rot_handler
+        self.hardware.rot2_cb = self.current_synth.rot_handler
+        self.hardware.rot3_cb = None
+        self.hardware.rot4_cb = None
+        self.hardware.touchx_cb = None
+        self.hardware.touchy_cb  = None
+
     async def b_handler(self):
         print(f"Button main handler")
         if self.current_synth:
@@ -74,12 +92,6 @@ class Main:
             self.hardware.touchx_cb = None
             self.hardware.touchy_cb  = None
         self.pressed = True
-
-    async def null_button_handler(self):
-        pass
-
-    async def null_handler(self, data):
-        pass
 
     # TODO : add rotary handlers:
     #    - up-left   : general synth select
@@ -124,6 +136,7 @@ class Main:
                                                               loop=self.loop,
                                                               jack_client=self.client)
                             print("############# Synth created")
+                            self.set_hardware_handlers()
                             await self.current_synth.start()
                             print(self.hardware.b2_cb)
                             self.screen.draw_menu(self.menu_line)
