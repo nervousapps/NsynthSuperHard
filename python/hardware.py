@@ -31,14 +31,15 @@ class Hardware:
         self.b3_cb = b3_cb
         self.b4_cb = b4_cb
 
-        self.buttons = {
-            Button(5): self.b1_cb,
-            Button(6): self.b2_cb,
-            Button(13): self.b3_cb,
-            Button(26): self.b4_cb
-        }
-        for button, _ in self.buttons.items():
-            button.when_pressed = self.button_pressed_cb
+        self.button1 = Button(5)
+        self.button2 = Button(6)
+        self.button3 = Button(13)
+        self.button4 = Button(26)
+
+        button1.when_pressed = self.button_pressed_cb
+        button2.when_pressed = self.button_pressed_cb
+        button3.when_pressed = self.button_pressed_cb
+        button4.when_pressed = self.button_pressed_cb
 
         self.bus = smbus.SMBus(1)
 
@@ -52,9 +53,14 @@ class Hardware:
             print('did not respond')
 
     def button_pressed_cb(self, device):
-        print(self.buttons[device])
-        if self.buttons[device]:
-            self.loop.create_task(self.buttons[device]())
+        if device == self.button1 and self.b1_cb:
+            self.loop.create_task(self.b1_cb())
+        elif device == self.button2 and self.b2_cb:
+            self.loop.create_task(self.b2_cb())
+        elif device == self.button3 and self.b3_cb:
+            self.loop.create_task(self.b3_cb())
+        elif device == self.button4 and self.b4_cb:
+            self.loop.create_task(self.b4_cb())
 
     def stop(self):
         self.running = False
@@ -65,6 +71,8 @@ class Hardware:
     def start(self):
         if not self.task:
             self.running = True
+            for button, cb in self.buttons.items():
+                if cb != self.
             self.task = self.loop.create_task(self.check_inputs_task())
 
     async def check_inputs_task(self):
