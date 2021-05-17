@@ -71,8 +71,6 @@ class Hardware:
     def start(self):
         if not self.task:
             self.running = True
-            for button, cb in self.buttons.items():
-                if cb != self.
             self.task = self.loop.create_task(self.check_inputs_task())
 
     async def check_inputs_task(self):
