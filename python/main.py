@@ -86,7 +86,7 @@ class Main:
     #    - up-right  : selected/running synth menu
     #    - down-right: select x touch CC / push -> select ???
     #    - down-left : select y touch CC / push -> select CC num for each pot
-    #                   => add pots handler to send CC value 
+    #                   => add pots handler to send CC value
     async def rot_handler(self, data):
         if data:
             self.synth_index = 0
