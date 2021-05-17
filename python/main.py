@@ -114,7 +114,7 @@ class Main:
                 self.hardware.start()
                 while True:
                     try:
-                        if self.pressed:
+                        if self.pressed and not self.current_synth:
                             self.pressed = False
                             self.hardware.stop()
                             self.current_synth = self.available_synths[self.synth_index]["class"](
