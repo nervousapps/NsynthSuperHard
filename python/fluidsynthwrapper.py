@@ -15,7 +15,6 @@ class FluidSynthWrapper:
         self.hardware.pot3_cb = self.pot3_handler
         self.hardware.pot4_cb = self.pot4_handler
         self.hardware.pot5_cb = self.pot5_handler
-        self.hardware.pot6_cb = self.null_handler
         self.hardware.rot2_cb = self.rot_handler
 
         self.midi = midi
@@ -35,9 +34,6 @@ class FluidSynthWrapper:
 
     async def b_handler(self):
         self.reload = True
-
-    async def null_handler(self, data):
-        pass
 
     async def rot_handler(self, data):
         if data:

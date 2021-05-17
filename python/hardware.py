@@ -53,7 +53,8 @@ class Hardware:
 
     def button_pressed_cb(self, device):
         print(self.buttons[device])
-        self.loop.create_task(self.buttons[device]())
+        if self.buttons[device]:
+            self.loop.create_task(self.buttons[device]())
 
     def stop(self):
         self.running = False

@@ -130,7 +130,6 @@ class Bristol:
                 print('timeout!')
                 self.screen.draw_text_box(f"{self.current_synth} is not available ...")
                 await asyncio.sleep(2)
-            self.hardware.b2_cb = self.b_handler
             while self.running:
                 if self.current_synth != self.available_synths[self.current_synth_index] or self.reload:
                     try:

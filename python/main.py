@@ -33,21 +33,21 @@ class Main:
 
         self.hardware = Hardware(self.loop,
                                  self.b_handler,
-                                 self.null_button_handler,
-                                 self.null_button_handler,
-                                 self.null_button_handler,
-                                 (self.null_handler, #self.pot1_handler,
-                                  self.null_handler, #self.pot2_handler,
-                                  self.null_handler, #self.pot3_handler,
-                                  self.null_handler, #self.pot4_handler,
-                                  self.null_handler, #self.pot5_handler,
-                                  self.null_handler, #self.pot6_handler,
+                                 None,
+                                 None,
+                                 None,
+                                 (None, #self.pot1_handler,
+                                  None, #self.pot2_handler,
+                                  None, #self.pot3_handler,
+                                  None, #self.pot4_handler,
+                                  None, #self.pot5_handler,
+                                  None, #self.pot6_handler,
                                   self.rot_handler,
-                                  self.null_handler, #self.rot2_handler,
-                                  self.null_handler, #self.rot3_handler,
-                                  self.null_handler, #self.rot4_handler,
-                                  self.null_handler, #self.touchx_handler,
-                                  self.null_handler)) #self.touchy_handler))
+                                  None, #self.rot2_handler,
+                                  None, #self.rot3_handler,
+                                  None, #self.rot4_handler,
+                                  None, #self.touchx_handler,
+                                  None)) #self.touchy_handler))
         self.midi = Midi()
         # Init jack client
         self.client = jack.Client('JackClient')
@@ -57,22 +57,22 @@ class Main:
         if self.current_synth:
             self.current_synth.stop()
             self.current_synth = None
-        self.hardware.b1_cb = self.b_handler
-        self.hardware.b2_cb = self.null_button_handler
-        self.hardware.b3_cb = self.null_button_handler
-        self.hardware.b4_cb = self.null_button_handler
-        self.hardware.pot1_cb = self.null_handler
-        self.hardware.pot2_cb = self.null_handler
-        self.hardware.pot3_cb = self.null_handler
-        self.hardware.pot4_cb = self.null_handler
-        self.hardware.pot5_cb = self.null_handler
-        self.hardware.pot6_cb = self.null_handler
-        self.hardware.rot1_cb = self.rot_handler
-        self.hardware.rot2_cb = self.null_handler
-        self.hardware.rot3_cb = self.null_handler
-        self.hardware.rot4_cb = self.null_handler
-        self.hardware.touchx_cb = self.null_handler
-        self.hardware.touchy_cb  = self.null_handler
+            self.hardware.b1_cb = self.b_handler
+            self.hardware.b2_cb = None
+            self.hardware.b3_cb = None
+            self.hardware.b4_cb = None
+            self.hardware.pot1_cb = None
+            self.hardware.pot2_cb = None
+            self.hardware.pot3_cb = None
+            self.hardware.pot4_cb = None
+            self.hardware.pot5_cb = None
+            self.hardware.pot6_cb = None
+            self.hardware.rot1_cb = self.rot_handler
+            self.hardware.rot2_cb = None
+            self.hardware.rot3_cb = None
+            self.hardware.rot4_cb = None
+            self.hardware.touchx_cb = None
+            self.hardware.touchy_cb  = None
         self.pressed = True
 
     async def null_button_handler(self):
