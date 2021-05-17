@@ -48,7 +48,7 @@ class Hardware:
 
     def button_pressed_cb(self, device):
         print(self.buttons[device])
-        self.loop.call_soon(self.buttons[device]())
+        self.loop.call_soon(self.buttons[device])
 
     def stop(self):
         self.running = False
