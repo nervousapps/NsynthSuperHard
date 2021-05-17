@@ -55,24 +55,24 @@ class Main:
     async def b_handler(self):
         print(f"Button main handler")
         if self.current_synth:
-            # self.hardware.b1_cb = self.b_handler
-            # self.hardware.b2_cb = self.null_button_handler
-            # self.hardware.b3_cb = self.null_button_handler
-            # self.hardware.b4_cb = self.null_button_handler
-            # self.hardware.pot1_cb = self.null_handler
-            # self.hardware.pot2_cb = self.null_handler
-            # self.hardware.pot3_cb = self.null_handler
-            # self.hardware.pot4_cb = self.null_handler
-            # self.hardware.pot5_cb = self.null_handler
-            # self.hardware.pot6_cb = self.null_handler
-            # self.hardware.rot1_cb = self.rot_handler
-            # self.hardware.rot2_cb = self.null_handler
-            # self.hardware.rot3_cb = self.null_handler
-            # self.hardware.rot4_cb = self.null_handler
-            # self.hardware.touchx_cb = self.null_handler
-            # self.hardware.touchy_cb  = self.null_handler
             self.current_synth.stop()
             self.current_synth = None
+        self.hardware.b1_cb = self.b_handler
+        self.hardware.b2_cb = self.null_button_handler
+        self.hardware.b3_cb = self.null_button_handler
+        self.hardware.b4_cb = self.null_button_handler
+        self.hardware.pot1_cb = self.null_handler
+        self.hardware.pot2_cb = self.null_handler
+        self.hardware.pot3_cb = self.null_handler
+        self.hardware.pot4_cb = self.null_handler
+        self.hardware.pot5_cb = self.null_handler
+        self.hardware.pot6_cb = self.null_handler
+        self.hardware.rot1_cb = self.rot_handler
+        self.hardware.rot2_cb = self.null_handler
+        self.hardware.rot3_cb = self.null_handler
+        self.hardware.rot4_cb = self.null_handler
+        self.hardware.touchx_cb = self.null_handler
+        self.hardware.touchy_cb  = self.null_handler
         self.pressed = True
 
     async def null_button_handler(self):
