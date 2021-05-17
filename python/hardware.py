@@ -36,10 +36,10 @@ class Hardware:
         self.button3 = Button(13)
         self.button4 = Button(26)
 
-        button1.when_pressed = self.button_pressed_cb
-        button2.when_pressed = self.button_pressed_cb
-        button3.when_pressed = self.button_pressed_cb
-        button4.when_pressed = self.button_pressed_cb
+        self.button1.when_pressed = self.button_pressed_cb
+        self.button2.when_pressed = self.button_pressed_cb
+        self.button3.when_pressed = self.button_pressed_cb
+        self.button4.when_pressed = self.button_pressed_cb
 
         self.bus = smbus.SMBus(1)
 
