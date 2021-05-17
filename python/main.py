@@ -119,8 +119,6 @@ class Main:
                                                               jack_client=self.client)
                             print("############# Synth created")
                             await self.current_synth.start()
-                            print(self.hardware.b2_cb)
-                            self.screen.draw_menu(self.menu_line)
                             await asyncio.sleep(1)
                             self.hardware.start()
                     except Exception as error:
