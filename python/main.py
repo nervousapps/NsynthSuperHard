@@ -127,8 +127,7 @@ class Main:
                             await self.current_synth.start()
                             self.screen.draw_menu(self.menu_line)
                             await asyncio.sleep(1)
-                            if not self.hardware.running:
-                                self.hardware.start()
+                            self.hardware.start()
                     except Exception as error:
                         self.screen.stop_gif()
                         print(f"Main loop exception :{error}")

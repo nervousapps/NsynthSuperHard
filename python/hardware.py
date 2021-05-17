@@ -26,11 +26,16 @@ class Hardware:
         self.pressed = False
         self.task = None
 
+        self.b1_cb = b1_cb
+        self.b2_cb = b2_cb
+        self.b3_cb = b3_cb
+        self.b4_cb = b4_cb
+
         self.buttons = {
-            Button(5): b1_cb,
-            Button(6): b2_cb,
-            Button(13): b3_cb,
-            Button(26): b4_cb
+            Button(5): self.b1_cb,
+            Button(6): self.b2_cb,
+            Button(13): self.b3_cb,
+            Button(26): self.b4_cb
         }
         for button, _ in self.buttons.items():
             button.when_pressed = self.button_pressed_cb
