@@ -115,8 +115,8 @@ class Main:
                 while True:
                     try:
                         if self.pressed and not self.current_synth:
-                            self.pressed = False
                             self.hardware.stop()
+                            self.pressed = False
                             self.current_synth = self.available_synths[self.synth_index]["class"](
                                                               hardware=self.hardware,
                                                               midi=self.midi,
@@ -125,6 +125,8 @@ class Main:
                                                               jack_client=self.client)
                             print("############# Synth created")
                             await self.current_synth.start()
+                            while self.current_synth.running:
+                                await asyncio.sleep(10)
                             self.screen.draw_menu(self.menu_line)
                             await asyncio.sleep(1)
                             self.hardware.start()
