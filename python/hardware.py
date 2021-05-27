@@ -54,13 +54,13 @@ class Hardware:
 
     def button_pressed_cb(self, device):
         if device == self.button1 and self.b1_cb:
-            self.loop.create_task(self.b1_cb())
+            self.loop.call_soon_threadsafe(self.b1_cb)
         elif device == self.button2 and self.b2_cb:
-            self.loop.create_task(self.b2_cb())
+            self.loop.call_soon_threadsafe(self.b2_cb)
         elif device == self.button3 and self.b3_cb:
-            self.loop.create_task(self.b3_cb())
+            self.loop.call_soon_threadsafe(self.b3_cb)
         elif device == self.button4 and self.b4_cb:
-            self.loop.create_task(self.b4_cb())
+            self.loop.call_soon_threadsafe(self.b4_cb)
 
     def stop(self):
         self.running = False

@@ -7,8 +7,8 @@ from hardware import Hardware
 from screen import Screen
 from midi import Midi
 
-from bristol import Bristol
-from fluidsynthwrapper import FluidSynthWrapper
+from bristol_wrapper import BristolWrapper
+from fluidsynth_wrapper import FluidSynthWrapper
 
 
 class Main:
@@ -31,6 +31,7 @@ class Main:
 
         self.pressed = False
 
+        # Init hardware with appropriate callbacks
         self.hardware = Hardware(self.loop,
                                  self.b_handler,
                                  None,
@@ -48,6 +49,7 @@ class Main:
                                   None, #self.rot4_handler,
                                   None, #self.touchx_handler,
                                   None)) #self.touchy_handler))
+        # Init MIDI
         self.midi = Midi()
         # Init jack client
         self.client = jack.Client('JackClient')
@@ -67,10 +69,10 @@ class Main:
             self.hardware.pot4_cb = None
             self.hardware.pot5_cb = None
             self.hardware.pot6_cb = None
-            self.hardware.rot1_cb = self.rot_handler
+            self.hardware.rot1_cb = self.rot1_handler
             self.hardware.rot2_cb = None
-            self.hardware.rot3_cb = None
-            self.hardware.rot4_cb = None
+            self.hardware.rot3_cb = self.rot3_handler
+            self.hardware.rot4_cb = self.rot4_handler
             self.hardware.touchx_cb = None
             self.hardware.touchy_cb  = None
         self.pressed = True
@@ -81,7 +83,7 @@ class Main:
     #    - down-right: select x touch CC / push -> select ???
     #    - down-left : select y touch CC / push -> select CC num for each pot
     #                   => add pots handler to send CC value
-    async def rot_handler(self, data):
+    async def rot1_handler(self, data):
         if data:
             self.synth_index = 0
             self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index+1]["name"]]
@@ -90,6 +92,14 @@ class Main:
             self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
         print(data)
         print(self.synth_index)
+        self.screen.draw_menu(self.menu_line)
+
+    async def rot3_handler(self, data):
+        print(data)
+        self.screen.draw_menu(self.menu_line)
+
+    async def rot4_handler(self, data):
+        print(data)
         self.screen.draw_menu(self.menu_line)
 
     async def main(self):
