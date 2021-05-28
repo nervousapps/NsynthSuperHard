@@ -148,4 +148,9 @@ class Screen:
                 if not self.gif_run:
                     break
                 await self.draw_image(image)
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.05)
+            for image in reversed(gif_images[:-1]):
+                if not self.gif_run:
+                    break
+                await self.draw_image(image)
+                await asyncio.sleep(0.05)
