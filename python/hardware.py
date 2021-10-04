@@ -70,6 +70,9 @@ class Hardware:
             print('did not respond')
 
     def button_pressed_cb(self, device):
+        """
+        Call the associated async callback for a button pressed event
+        """
         if device == self.button1 and self.b1_cb:
             self.loop.call_soon_threadsafe(self.b1_cb)
         elif device == self.button2 and self.b2_cb:
@@ -110,42 +113,54 @@ class Hardware:
                         # print(data)
                         # Pot1
                         if data[6] != previous_data[6] and self.pot1_cb:
-                            self.loop.call_soon_threadsafe(self.pot1_cb, data[6])
+                            self.loop.call_soon_threadsafe(
+                                self.pot1_cb, data[6])
                         # Pot2
                         if data[7] != previous_data[7] and self.pot2_cb:
-                            self.loop.call_soon_threadsafe(self.pot2_cb, data[7])
+                            self.loop.call_soon_threadsafe(
+                                self.pot2_cb, data[7])
                         # Pot3
                         if data[8] != previous_data[8] and self.pot3_cb:
-                            self.loop.call_soon_threadsafe(self.pot3_cb, data[8])
+                            self.loop.call_soon_threadsafe(
+                                self.pot3_cb, data[8])
                         # Pot4
                         if data[9] != previous_data[9] and self.pot4_cb:
-                            self.loop.call_soon_threadsafe(self.pot4_cb, data[9])
+                            self.loop.call_soon_threadsafe(
+                                self.pot4_cb, data[9])
                         # Pot5
                         if data[10] != previous_data[10] and self.pot5_cb:
-                            self.loop.call_soon_threadsafe(self.pot5_cb, data[10])
+                            self.loop.call_soon_threadsafe(
+                                self.pot5_cb, data[10])
                         # Pot6
                         if data[11] != previous_data[11] and self.pot6_cb:
-                            self.loop.call_soon_threadsafe(self.pot6_cb, data[11])
+                            self.loop.call_soon_threadsafe(
+                                self.pot6_cb, data[11])
                         # Rot1
                         if data[2] != previous_data[2] and self.rot1_cb:
                             if (data[2] == 0 and previous_data[2] == 255) or \
                                data[2] > previous_data[2]:
-                                self.loop.call_soon_threadsafe(self.rot1_cb, True)
+                                self.loop.call_soon_threadsafe(
+                                    self.rot1_cb, True)
                             else:
-                                self.loop.call_soon_threadsafe(self.rot1_cb, False)
+                                self.loop.call_soon_threadsafe(
+                                    self.rot1_cb, False)
                         # Rot2
                         if data[3] != previous_data[3] and self.rot2_cb:
                             if (data[3] == 0 and previous_data[3] == 255) or \
                                data[3] > previous_data[3]:
-                                self.loop.call_soon_threadsafe(self.rot2_cb, True)
+                                self.loop.call_soon_threadsafe(
+                                    self.rot2_cb, True)
                             else:
-                                self.loop.call_soon_threadsafe(self.rot2_cb, False)
+                                self.loop.call_soon_threadsafe(
+                                    self.rot2_cb, False)
                         # Rot3
                         if data[4] != previous_data[4] and self.rot3_cb:
-                            self.loop.call_soon_threadsafe(self.rot3_cb, data[4])
+                            self.loop.call_soon_threadsafe(
+                                self.rot3_cb, data[4])
                         # Rot4
                         if data[5] != previous_data[5] and self.rot4_cb:
-                            self.loop.call_soon_threadsafe(self.rot4_cb, data[5])
+                            self.loop.call_soon_threadsafe(
+                                self.rot4_cb, data[5])
                         # Touch
                         if data[0] != previous_data[0] and data[0]:
                             if data[0] == 255:

@@ -1,13 +1,30 @@
 import os
 import asyncio
 import fluidsynth
+import jack
+import logging
+
+from hardware import Hardware
+from midi import Midi
+from screen import Screen
+
+LOGGER = logging.Logger("FSLOG", level="DEBUG")
 
 
 class FluidSynthWrapper:
-    def __init__(self, hardware, midi, screen, loop, jack_client):
+    """
+    Wrapper for FluidSynth
+    """
+
+    def __init__(self,
+                 hardware: Hardware,
+                 midi: Midi,
+                 screen: Screen,
+                 loop: asyncio.AbstractEventLoop,
+                 jack_client: jack.Client):
         self.client = jack_client
         self.hardware = hardware
-        self.hardware.b2_cb = self.b_handler, None
+        self.hardware.b2_cb = self.b_handler
 
         # self.hardware.pot1_cb = self.pot1_handler
         # self.hardware.pot2_cb = self.pot2_handler
@@ -51,8 +68,10 @@ class FluidSynthWrapper:
 
     def stop(self):
         self.running = False
-        src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
-        dest = self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)
+        src = self.client.get_ports(
+            is_midi=True, name_pattern='Arturia', is_output=True)
+        dest = self.client.get_ports(
+            is_midi=True, name_pattern='fluidsynth', is_input=True)
         if src and dest:
             self.client.disconnect(src[0], dest[0])
         self.fs.delete()
@@ -62,24 +81,26 @@ class FluidSynthWrapper:
         try:
             self.screen.draw_text_box(f"FluidSynth")
             self.fs.start(driver="jack", midi_driver="jack")
-            print("############# FS started")
+            LOGGER.info("############# FS started")
             self.sfid = self.fs.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2")
-            print("############# FS load font")
+            LOGGER.info("############# FS load font")
             self.fs.program_select(0, self.sfid, 0, 0)
-            print("############# FS programm select")
+            LOGGER.info("############# FS programm select")
             while not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[0]) or \
-                not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1]):
+                    not self.client.get_all_connections(self.client.get_ports(is_output=True, is_audio=True, name_pattern='fluidsynth')[1]):
                 await asyncio.sleep(0.5)
             while not self.client.get_all_connections(self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)[0]):
                 try:
-                    src = self.client.get_ports(is_midi=True, name_pattern='Arturia', is_output=True)
-                    dest = self.client.get_ports(is_midi=True, name_pattern='fluidsynth', is_input=True)
+                    src = self.client.get_ports(
+                        is_midi=True, name_pattern='Arturia', is_output=True)
+                    dest = self.client.get_ports(
+                        is_midi=True, name_pattern='fluidsynth', is_input=True)
                     if src and dest:
                         self.client.connect(src[0], dest[0])
                 except Exception as error:
                     print(error)
                 await asyncio.sleep(0.5)
-            print("############# FS running")
+            LOGGER.info("############# FS running")
             sfont_id, bank, program, name = self.fs.channel_info(0)
             # self.screen.stop_gif()
             self.screen.draw_text_box(f"Preset \n{name.decode()}")

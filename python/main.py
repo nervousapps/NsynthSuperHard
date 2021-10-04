@@ -1,34 +1,41 @@
 import os
-import time
 import asyncio
+import logging
 import concurrent.futures
 import jack
 
 from hardware import Hardware
 from screen import Screen
 from midi import Midi
+from midi_jack import JackInterface
 
 from bristol_wrapper import BristolWrapper
 from fluidsynth_wrapper import FluidSynthWrapper
+
+
+LOGGER = logging.Logger("MAINLOG", level="DEBUG")
 
 
 class Main:
     def __init__(self, loop):
         self.loop = loop
 
-        # Get the list of available synths
+        # Set the list of available synths
         self.available_synths = [
             {"name": "BRISTOL", "class": BristolWrapper},
             {"name": "FluidSynth", "class": FluidSynthWrapper}
         ]
 
+        # Instantiate screen
         self.screen = Screen()
 
+        # Declare some constants
         self.reload = False
         self.loading = self.screen.get_loading()
         self.synth_index = 1
         self.current_synth = None
-        self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
+        self.menu_line = ["", self.available_synths[self.synth_index]
+                          ["name"], self.available_synths[self.synth_index-1]["name"]]
 
         self.pressed = False
 
@@ -45,12 +52,13 @@ class Main:
                                   self.pot5_handler,
                                   self.pot6_handler,
                                   self.rot1_handler,
-                                  None, #self.rot2_handler,
+                                  None,  # self.rot2_handler,
                                   self.rot3_handler,
                                   self.rot4_handler,
                                   self.touch_handler))
 
         # Init the CC values object
+        # Needed to link MIDIcc message to hardware component event
         self.ccs = {
             "pot1": 0,
             "pot2": 1,
@@ -65,16 +73,35 @@ class Main:
         self.select_pot = False
         self.current_pot = 1
 
+        # Init jack client
+        self.client = jack.Client('JackClient')
+
+        # Init MidiJack
+        self.midi_jack = JackInterface(self.client)
+
         # Init MIDI
-        self.midi = Midi()
+        self.midi = Midi(self.client)
         self.available_midi_devices = []
         self.param_midi = False
         self.select_midi_device = 0
         self.current_midi_device = self.select_midi_device
-        # Init jack client
-        self.client = jack.Client('JackClient')
+
+    def run(self):
+        with concurrent.futures.ThreadPoolExecutor() as pool:
+            hardware_task = self.loop.run_in_executor(
+                pool, self.hardware.check_inputs_task)
+            loading_task = self.loop.run_in_executor(
+                pool, self.screen.start_gif, self.loading)
+            self.loop.run_until_complete(asyncio.wait(
+                [loading_task,
+                 self.main(),
+                 hardware_task]))
 
     def b1h_handler(self):
+        """
+        Button 1 held  handler
+        """
+        LOGGER.info(f"Button 1 handler")
         self.param_midi = not self.param_midi
         if self.param_midi and self.available_midi_devices:
             self.menu_line = []
@@ -90,6 +117,10 @@ class Main:
             pass
 
     def b3h_handler(self):
+        """
+        Button 3 held  handler
+        """
+        LOGGER.info(f"Button 3 handler")
         if self.param_pots:
             self.screen.draw_text_box(f"touchy : {self.ccs['touchy']}")
         else:
@@ -98,6 +129,10 @@ class Main:
         self.param_pots = not self.param_pots
 
     def b4h_handler(self):
+        """
+        Button 4 held  handler
+        """
+        LOGGER.info(f"Button 4 handler")
         if self.param_pots:
             self.screen.draw_text_box(f"touchy : {self.ccs['touchy']}")
         else:
@@ -106,10 +141,13 @@ class Main:
         self.param_pots = not self.param_pots
 
     def b1_handler(self):
+        """
+        Button 1 pressed handler
+        """
         # if self.param_midi:
         #     self.current_midi_device = self.select_midi_device
         # else:
-        print(f"Button main handler")
+        LOGGER.info(f"Button main handler")
         if self.current_synth:
             self.current_synth.stop()
             self.current_synth = None
@@ -135,22 +173,30 @@ class Main:
         self.pressed = True
 
     def b3_handler(self):
+        """
+        Button 2 pressed handler
+        """
         if self.param_pots:
             self.select_pot = not self.select_pot
             if self.select_pot:
                 self.screen.draw_text_box(f"pot{self.current_pot}")
             else:
-                self.screen.draw_text_box(f"pot{self.current_pot} : {self.ccs[f'pot{self.current_pot}']}")
+                self.screen.draw_text_box(
+                    f"pot{self.current_pot} : {self.ccs[f'pot{self.current_pot}']}")
         else:
             pass
 
     def b4_handler(self):
+        """
+        Button 4 pressed handler
+        """
         if self.param_pots:
             self.select_pot = not self.select_pot
             if self.select_pot:
                 self.screen.draw_text_box(f"pot{self.current_pot}")
             else:
-                self.screen.draw_text_box(f"pot{self.current_pot} : {self.ccs[f'pot{self.current_pot}']}")
+                self.screen.draw_text_box(
+                    f"pot{self.current_pot} : {self.ccs[f'pot{self.current_pot}']}")
         else:
             pass
 
@@ -161,6 +207,9 @@ class Main:
     #    - down-left : select y touch CC / push -> select CC num for each pot
     #                   => add pots handler to send CC value
     def rot1_handler(self, data):
+        """
+        Rotary 1 handler ->
+        """
         if self.param_midi:
             if data:
                 self.select_midi_device += 1
@@ -170,15 +219,18 @@ class Main:
                 self.select_midi_device = 0
             elif self.select_midi_device < 0:
                 self.select_midi_device = len(self.available_midi_devices)-1
-            self.menu_line = ["", self.available_midi_devices[self.select_midi_device].name, ""]
+            self.menu_line = [
+                "", self.available_midi_devices[self.select_midi_device].name, ""]
             self.screen.draw_menu(self.menu_line)
         else:
             if data:
                 self.synth_index = 0
-                self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index+1]["name"]]
+                self.menu_line = ["", self.available_synths[self.synth_index]
+                                  ["name"], self.available_synths[self.synth_index+1]["name"]]
             else:
                 self.synth_index = 1
-                self.menu_line = ["", self.available_synths[self.synth_index]["name"], self.available_synths[self.synth_index-1]["name"]]
+                self.menu_line = ["", self.available_synths[self.synth_index]
+                                  ["name"], self.available_synths[self.synth_index-1]["name"]]
             print(data)
             print(self.synth_index)
             self.screen.draw_menu(self.menu_line)
@@ -190,7 +242,8 @@ class Main:
                 self.screen.draw_text_box(f"pot{self.current_pot}")
             else:
                 self.ccs[f"pot{self.current_pot}"] = int(data/2)
-                self.screen.draw_text_box(f"pot{self.current_pot} : {self.ccs[f'pot{self.current_pot}']}")
+                self.screen.draw_text_box(
+                    f"pot{self.current_pot} : {self.ccs[f'pot{self.current_pot}']}")
         else:
             self.ccs["touchx"] = int(data/2)
             self.screen.draw_text_box(f"touchx : {self.ccs['touchx']}")
@@ -233,14 +286,17 @@ class Main:
             self.current_synth.cc(0, self.ccs["pot6"], int(data/2))
 
     def touch_handler(self, data):
-        self.screen.draw_text_box(f"touchx {self.ccs['touchx']}: {int(data[0])} \n touchy {self.ccs['touchy']}: {int(data[1])}")
+        self.screen.draw_text_box(
+            f"touchx {self.ccs['touchx']}: {int(data[0])} \n touchy {self.ccs['touchy']}: {int(data[1])}")
         if self.current_synth:
             self.current_synth.cc(0, self.ccs["touchx"], int(data[0]))
             self.current_synth.cc(0, self.ccs["touchy"], int(data[1]))
 
     async def main(self):
         try:
+            # Stop hardware task
             self.hardware.stop()
+            # Draw the welcome screen
             self.screen.draw_text_box("NsynthSuperHard")
             await asyncio.sleep(1)
             # self.loop.create_task(self.screen.start_gif(self.loading))
@@ -248,25 +304,38 @@ class Main:
             # self.loop.create_task(self.midi.midi_over_uart_task())
             with self.client:
                 await asyncio.sleep(5)
+                # Start the midi alsa to jack daemon
                 _ = os.popen(f"a2jmidid -e")
+                # TODO : Start the pigpio deamon
                 await asyncio.sleep(2)
+                # Get availables midi devices
                 self.available_midi_devices = self.client.get_ports(
                     is_midi=True, is_output=True)
+                # Stop the gif animation
                 self.screen.stop_gif()
+                # Draw the menu
                 self.screen.draw_menu(self.menu_line)
+                # Start the hardware task
                 self.hardware.start()
                 while True:
                     try:
                         if self.pressed and not self.current_synth:
+                            # Stop all hardware task while starting a synth
                             self.hardware.stop()
+                            # Stop all midi task while starting a synth
+                            self.midi.stop()
+                            # Show loading screen
+                            self.loop.create_task(
+                                self.screen.start_gif(self.loading))
                             self.pressed = False
-                            self.current_synth = self.available_synths[self.synth_index]["class"](
-                                                              hardware=self.hardware,
-                                                              midi=self.midi,
-                                                              screen=self.screen,
-                                                              loop=self.loop,
-                                                              jack_client=self.client)
+                            self.current_synth = \
+                                self.available_synths[self.synth_index]["class"](hardware=self.hardware,
+                                                                                 midi=self.midi,
+                                                                                 screen=self.screen,
+                                                                                 loop=self.loop,
+                                                                                 jack_client=self.client)
                             print("############# Synth created")
+                            self.screen.stop_gif()
                             await self.current_synth.start()
                             await asyncio.sleep(1)
                             self.hardware.start()
@@ -290,11 +359,4 @@ class Main:
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     main_app = Main(loop)
-    with concurrent.futures.ThreadPoolExecutor() as pool:
-        hardware_task = loop.run_in_executor(
-            pool, main_app.hardware.check_inputs_task)
-        loading_task = loop.run_in_executor(
-            pool, main_app.screen.start_gif, main_app.loading)
-        loop.run_until_complete(asyncio.wait([loading_task,
-                                              main_app.main(),
-                                              hardware_task]))
+    main_app.run()

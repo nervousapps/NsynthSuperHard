@@ -56,7 +56,7 @@ install_all_deps() {
 
   sudo apt update
   sudo apt upgrade -y
-  sudo apt install -y python3-mido python3-smbus python3-gpiozero a2jmidid
+  sudo apt install -y python3-mido python3-smbus2 python3-gpiozero a2jmidid
 
   python3 -m pip install setuptools JACK-Client adafruit-circuitpython-ssd1306 python-rtmidi pyFluidSynth
 }
@@ -75,6 +75,6 @@ setup_i2c
 setup_audio
 setup_serial
 
-setup_service
-
-sudo reboot
+# setup_service
+#
+# sudo reboot

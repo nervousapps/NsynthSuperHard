@@ -10,8 +10,8 @@ Jack used for audio and midi driver.
 # Prerequisites
 The OpenNsynthSuper firmware need to be already flashed in the microcontroller.
 
-If not, please follow the instructions here https://github.com/googlecreativelab/open-nsynth-super#3-prepare-the-sd-card.
-Just follow the instructions 3 and 4, get the 16GB image to go faster.
+If not, please follow the instructions here https://github.com/googlecreativelab/open-nsynth-super/tree/master/firmware or here https://github.com/googlecreativelab/open-nsynth-super#3-prepare-the-sd-card.
+Just follow the instructions 3 and 4 for the second option, get the 16GB image to go faster.
 
 If the OpenNsynthSuper was up and running then the firmware is already loaded, no need to install it.
 
